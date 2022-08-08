@@ -1,0 +1,29 @@
+
+<div *ngIf="isLoggedIn">
+  <div class="alert alert-warning" *ngIf="userGroupActionFailed">
+    failed to do usergroup action!<br />{{ errorMessage }}
+  </div>
+  <button class="btn btn-lg btn-outline-primary" (click)="openCreateUserGroupModal()">Create usergroup</button>
+
+  <div *ngFor="let pendingusergroup of pendinguserGroups" class="pendinguserGroupItem">
+
+    <h3>
+<!--      <a (click)="loadUserGroupFromUserGroups(usergroup.id)">-->
+        pending: {{ pendingusergroup.name }}
+<!--      </a>-->
+      <a (click)="acceptUserGroupInvite(pendingusergroup.id)">accept</a>
+      <a (click)="declineUserGroupInvite(pendingusergroup.id)">decline</a>
+    </h3>
+
+  </div>
+
+  <div *ngFor="let usergroup of userGroups" class="userGroupItem">
+
+    <h3>
+      <a (click)="loadUserGroupFromUserGroups(usergroup.id)">
+        {{ usergroup.name }}
+      </a>
+    </h3>
+
+  </div>
+</div>

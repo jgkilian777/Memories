@@ -1,0 +1,102 @@
+/* Copyright 2018 Google LLC.
+SPDX-License-Identifier: Apache-2.0 */
+
+/* CSS files add styling rules to your content */
+
+/*body {*/
+/*  font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;*/
+/*  margin: 2em;*/
+/*}*/
+
+.container_dnd {
+  width: 100%;
+  max-width: 100%;
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr 1fr);
+  grid-auto-rows: 50px;
+  /*  grid-template-columns: repeat(5, 5px 1fr 5px); */
+  gap: 10px;
+  float: left;
+  /* z-index: 2; */
+}
+
+.containerbehind_dnd {
+  width: 100%;
+  max-width: 100%;
+  /*position: absolute;*/
+  display: grid;
+  grid-template-columns: repeat(5, 1fr 1fr);
+  grid-auto-rows: 50px;
+  /*  grid-template-columns: repeat(5, 5px 1fr 5px); */
+  gap: 10px;
+  /* z-index: 1; */
+  float: left;
+
+}
+
+.fullcontainer_dnd {
+  width: 100%;
+  max-width: 100%;
+  float: left;
+  position: relative;
+}
+
+.subgrid_dnd {
+  grid-column: span 2;
+}
+
+.behl_dnd {
+  margin-right: -5px;
+}
+
+.behr_dnd {
+  margin-left: -5px;
+}
+
+.backbox_dnd {
+  border: 3px solid #666;
+  background-color: #ddd;
+  border-radius: .5em;
+  padding: 10px;
+  /*width: 100px;*/
+  width: 100%;
+}
+
+
+.box_dnd {
+  border: 3px solid #666;
+  background-color: #ddd;
+  border-radius: .5em;
+  padding: 10px;
+  cursor: move;
+  /*width: 100px;*/
+  width: 100%;
+  /*font: 95px/1 "Impact";*/
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+/*font-size: 1vw;*/
+}
+
+.folder_dnd {
+  background-color: #dd1;
+}
+
+#toggleFolderDepositButton {
+  background-color: #D3D3D3;
+}
+
+
+
+.box_dnd.over_dnd {
+  border: 3px dotted #667;
+}
+.behindbox_dnd.over_dnd {
+  background-color: #a83246;
+  opacity: 0.17;
+}
+
+[draggable] {
+  user-select: none;
+}

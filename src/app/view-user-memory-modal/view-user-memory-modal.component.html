@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <h4 class="modal-title">Hi there!</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+</div>
+
+
+
+
+
+<div class="alert alert-warning" *ngIf="loadMediaTypeFailed">
+  failed to load memory!<br />{{ errorMessage }}
+</div>
+
+
+<div #mediaContainer>
+
+</div>
+
+
+
+
+
+<div class="modal-body">
+  <button type="button" class="btn" (click)="activeModal.close('Close click')">create usergroup</button>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+</div>

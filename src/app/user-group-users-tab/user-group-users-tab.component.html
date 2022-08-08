@@ -1,0 +1,29 @@
+<div class="alert alert-warning" *ngIf="userGroupUserActionFailed">
+  failed to do action on user!<br />{{ userGroupUserActionErrorMessage }}
+</div>
+
+<button [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)" id="inviteUserToUserGroupButton"> invite user to group </button>
+
+<div *ngFor="let userInGroup of usersInGroup" class="userInGroup">
+
+  <h3>
+    <!--          <a (click)="loadUserGroupFromUserGroups(usergroup.id)">-->
+    <!--            {{ usergroup.name }}-->
+    <!--          </a>-->
+    {{userInGroup.username}}
+    <a [hidden]="!(!(userGroupAdminUsername===userInGroup.username) && currentUsername===userGroupAdminUsername || allowAllDebug)" (click)="removeUserFromUserGroup(userInGroup.username)">remove user from group</a>
+  </h3>
+
+</div>
+
+<div *ngFor="let pendingUserInGroup of pendingUsersInGroup" class="pendingUserInGroup">
+
+  <h3>
+    <!--          <a (click)="loadUserGroupFromUserGroups(usergroup.id)">-->
+    <!--            {{ usergroup.name }}-->
+    <!--          </a>-->
+    {{pendingUserInGroup.username}}
+    <a [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)" (click)="cancelPendingUserInvite(pendingUserInGroup.username)">cancel invite</a>
+  </h3>
+
+</div>

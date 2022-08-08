@@ -1,0 +1,16 @@
+<div>
+  <div class="alert alert-warning" *ngIf="isAddedToUserGroupFailed">
+   failure, couldnt add memory to usergroup!<br />{{ errorMessage2 }}
+  </div>
+</div>
+<div class="memoryItemsList">
+  <div *ngFor="let memoryItem of memories" class="memoryItem">
+
+    <h3>
+      <a (click)="addMemoryToUserGroup(memoryItem)">
+        {{ memoryItem.name }} {{memoryItem.fileType}} {{memoryItem.dateTimeAdded}}
+      </a>
+    </h3>
+
+  </div>
+</div>

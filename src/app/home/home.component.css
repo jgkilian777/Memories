@@ -1,0 +1,24 @@
+/*body {*/
+/*  display: flex; !* prevents weird whitespace issues *!*/
+/*  margin: 0; !* makes the website take up the whole window *!*/
+/*}*/
+
+section.userGroupsPanel {
+  display: inline-block; /* inline: allows multiple side by side. block: allows for more complex styling */
+  width: 25%; /* make each section have a width of 50% of the window */
+  height: 100vh; /* make the sections take up 100% of the vertical height of the window */
+  overflow-y: auto; /* if the content of a section does not fit, the section will be scrollable vertically (on the y axis) */
+  /* the following css is irrelevant styling */
+  /*font-size: 20vmin;*/
+  word-wrap: break-word;
+}
+
+section.userGroupContent {
+  display: inline-block; /* inline: allows multiple side by side. block: allows for more complex styling */
+  width: 75%; /* make each section have a width of 50% of the window */
+  height: 100vh; /* make the sections take up 100% of the vertical height of the window */
+  overflow-y: auto; /* if the content of a section does not fit, the section will be scrollable vertically (on the y axis) */
+  /* the following css is irrelevant styling */
+  /*font-size: 20vmin;*/
+  word-wrap: break-word;
+}

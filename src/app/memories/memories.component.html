@@ -1,0 +1,19 @@
+<div>
+  <div class="alert alert-warning" *ngIf="modifyMemoryFailed">
+    failure, couldnt modify memory!<br />{{ errorMessage }}
+  </div>
+</div>
+
+<div class="memoryItemsList">
+  <div *ngFor="let memoryItem of memories" class="memoryItem">
+
+    <h3>
+<!--      <a (click)="addMemoryToUserGroup(memoryItem)">-->
+
+        <a (click)="viewMemory(memoryItem.id)">{{ memoryItem.name }} {{memoryItem.fileType}} {{memoryItem.dateTimeAdded}} </a>
+      <button (click)="deleteMemory(memoryItem.id)">delete</button>
+      <button (click)="openRenameMemoryModal(memoryItem.id)">rename</button>
+    </h3>
+
+  </div>
+</div>
