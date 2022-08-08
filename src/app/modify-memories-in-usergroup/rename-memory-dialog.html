@@ -1,0 +1,19 @@
+
+<div mat-dialog-content>
+  <p>What's your favorite animal?</p>
+  <mat-form-field appearance="fill">
+    <mat-label>Favorite Animal</mat-label>
+    <input
+      #newNameInp
+      type="text"
+      required
+      minlength="3"
+      maxlength="40"
+
+      matInput>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="newNameInp.value">Ok</button>
+</div>

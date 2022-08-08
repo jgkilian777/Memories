@@ -23,6 +23,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -45,6 +46,18 @@ public class WebSecurityConfig {
   public void setUnauthorizedHandler(AuthEntryPointJwt unauthorizedHandler) {
     this.unauthorizedHandler = unauthorizedHandler;
   }
+
+//  @Bean
+//  public CommonsRequestLoggingFilter logFilter() {
+//    CommonsRequestLoggingFilter filter
+//      = new CommonsRequestLoggingFilter();
+//    filter.setIncludeQueryString(true);
+//    filter.setIncludePayload(true);
+//    filter.setMaxPayloadLength(10000);
+//    filter.setIncludeHeaders(false);
+//    filter.setAfterMessagePrefix("REQUEST DATA : ");
+//    return filter;
+//  }
 
   @Bean
   public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -72,6 +85,7 @@ public class WebSecurityConfig {
                   authorizeRequests
                       .antMatchers("/api/auth/**").permitAll()
                       .antMatchers("/api/test/**").permitAll()
+                      .antMatchers("/api/memories/**").permitAll()
                       .anyRequest().authenticated()
               )
 
@@ -85,6 +99,7 @@ public class WebSecurityConfig {
                 logout.permitAll()
                );
     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+//    http.addFilterBefore(logFilter(), UsernamePasswordAuthenticationFilter.class);
 //              .csrf(csrf ->
 //                csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //              );

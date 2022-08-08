@@ -23,13 +23,19 @@ public class User {
     private Long id;
 
     @OneToMany(mappedBy = "user")
-    private List<Memory> memories;
+//  @OneToMany
+//  @JoinColumn(name = "MEMORY_ID", referencedColumnName = "ID")
+    private Set<Memory> memories = new HashSet<>();
 
-    @ManyToMany(mappedBy = "users")
-    Set<UserGroup> userGroups;
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    private Set<UserGroup> userGroups = new HashSet<>();
+
+  @ManyToMany(mappedBy = "pendingusers", fetch = FetchType.LAZY)
+  private Set<UserGroup> pendinguserGroups = new HashSet<>();
 
     @NotBlank
     @Size(max = 20)
+    @Column(unique = true)
     private String username;
     @NotBlank
     @Size(max = 50)
@@ -93,5 +99,19 @@ public class User {
   public void setRoles(Set<Role> roles) {
     this.roles = roles;
   }
+
+  public Set<UserGroup> getUserGroups(){return userGroups;}
+  public Set<UserGroup> getPendingUserGroups(){return pendinguserGroups;}
+
+  public void addMemory(Memory memory){
+    memories.add(memory);
+  }
+
+  public Set<Memory> getMemories(){return memories;}
+
+//  public getU
+
+
+//  public void addUsergroup??
 
 }

@@ -1,40 +1,17 @@
-//var dirTreeString = '{"dirTree":['+
-//  '{"itemName":"file1", "fileId":"13214", "folder":"False"},'+
-//  '{"itemName":"file2", "fileId":"123551", "folder":"False"},'+
-//  '{"itemName":"folder1", "folder":"True", "folderContents":['+
-//
-//    '{"itemName":"file4", "fileId":"133e214aa", "folder":"False"},'+
-//    '{"itemName":"file5", "fileId":"1235t451daa", "folder":"False"},'+
-//    '{"itemName":"folder2", "folder":"True", "folderContents":[]}'+
-//
-//  ']}'+
-//']}';
+// import * as $ from "jquery";
+// import {$, jquery} from "jquery";
+// import 'bootstrap';
+// import {$, jquery} from "jquery";
+// var $;
 
-//<div draggable="true" class="box">A</div>
-//<div draggable="true" class="box folder">Folder D</div>
-
-//var dirTreeJSON = JSON.parse(dirTreeString);
-//dirTreeJSON.dirTree.forEach(function(b) {
-//    if (b.folder == 'True'){
-//        console.log("hiii");
-//        $("#dirview").append('<div draggable="true" class="box folder">${b.itemName}</div>');
-//    } else if (b.folder == 'False'){
-//        console.log("hiii3333file");
-//        $("#dirview").append('<div draggable="true" class="box">${b.itemName}</div>');
-//    }
-//
-//
-//});
-
-//$( ".inner" ).append( "<p>Test</p>" );
 function initDragStartZindex(){
 //    console.log("DOING THING111111");
     if (dragging===true){
 
-        let allBehindItems = document.querySelectorAll('.containerbehind .behindbox');
+        let allBehindItems = document.querySelectorAll('.containerbehind_dnd .behindbox_dnd');
 
          behindItems.forEach(function(behindItem) {
-            if (!behindItem.classList.contains("folderbehind")){
+            if (!behindItem.classList.contains("folderbehind_dnd")){
                 behindItem.style.zIndex=3;
 
             } else if (folderbehindzindex===3){
@@ -55,14 +32,15 @@ var dragSrcEl = null;
 //    console.log("starting drag");
 
     dragSrcEl = this;
+    // console.log("HELLO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    // console.log(this);
+    // console.log(dragSrcEl);
 
     e.dataTransfer.effectAllowed = 'move';
     dragging=true
     setTimeout(initDragStartZindex,10);
 
-//     console.log(this);
-//     console.log(this.style.opacity);
-//     console.log("weird asf drag");
+
   }
 
   function handleDragOver(e) {
@@ -88,23 +66,25 @@ var dragSrcEl = null;
 
   function handleDragEnter(e) {
 //    console.log(444);
-    this.classList.add('over');
+    this.classList.add('over_dnd');
   }
 
   function handleDragLeave(e) {
 //  console.log(555);
-    this.classList.remove('over');
+    this.classList.remove('over_dnd');
   }
 
   function handleDrop(e) { // this is only for folders since when dropping stuff onto files itll use the behind grid
 
-//  console.log("huh????2222222?")
-//  console.log(this)
     if (e.stopPropagation) {
       e.stopPropagation(); // stops the browser from redirecting.
     }
+
+
 //    console.log("ok?????????????")
-    if (dragSrcEl != this) {
+//     console.log(dragSrcEl);
+    // console.log(dragSrcEl.draggable);
+    if (dragSrcEl != this && (dragSrcEl && dragSrcEl.draggable===true)) {
         let treeNode = getNodeJSON(0);
         let itemInd;
         let folderInd;
@@ -152,11 +132,16 @@ function handleDropBehind(e) {
       e.stopPropagation(); // stops the browser from redirecting.
     }
 
+    if (!dragSrcEl || !dragSrcEl.draggable===true){
+      return false;
+    }
+
     let [destId, beforeAfter] = this.id.split("_");
     let srcIndex;
     let destIndex;
 
     let treeNode = getNodeJSON(0);
+    console.log(treeNode);
     treeNode.some(function (nodeItem, nodeItemInd) {
         if (nodeItem.itemId === destId) {
             destIndex=nodeItemInd;
@@ -176,7 +161,7 @@ function handleDropBehind(e) {
     }
 
 
-    if (srcIndex != destIndex && (srcIndex+1 != destIndex || beforeAfter==='1') && (srcIndex-1 != destIndex || beforeAfter==='0')) {
+    if (srcIndex !== destIndex && (srcIndex+1 !== destIndex || beforeAfter==='1') && (srcIndex-1 !== destIndex || beforeAfter==='0')) {
 
       let srcItemJSON = treeNode[srcIndex];
       let destElement = document.getElementById(destId);
@@ -219,76 +204,64 @@ function handleDropBehind(e) {
 
       }
 
-
     }
 
     return false;
   }
 
 
-
-
   function handleDragEnd(e) {
 //    console.log(this);
+//     console.log("OKAY THIS IS WORKING................")
     dragging=false
     this.style.opacity = '1';
 
     items.forEach(function (item) {
-      item.classList.remove('over');
+      item.classList.remove('over_dnd');
     });
 
-    let allBehindItems = document.querySelectorAll('.containerbehind .behindbox');
+    let allBehindItems = document.querySelectorAll('.containerbehind_dnd .behindbox_dnd');
      behindItems.forEach(function(behindItem) {
         behindItem.style.zIndex=1;
-        behindItem.classList.remove('over');
+        behindItem.classList.remove('over_dnd');
      });
 
-
-
+    dragSrcEl=null;
   }
 
-
   function openFolder(_this, e, nodeItem){
-//    this.innerHTML="folder opened";
-//    let openFolderId = this.
-//    console.log("nodeItem:");
-//    console.log(nodeItem);
+
     folderIdPath.push(nodeItem.itemId);
     loadTreeNode();
 
   }
 
-  function openFile(_this, e, nodeItem){
-//    console.log("hmm1");
-//    console.log(this);
-    _this.innerHTML="file opened";
-  }
+  // function openFile(_this, e, nodeItem){
+  //   _this.innerHTML="file opened";
+  // }
 
 
 function openItem(e){
     let openItemId = this.id;
 //    console.log(this);
     var _this = this
-//    console.log(_this);
-//    console.log("_???????");
 
     let treeNode = getNodeJSON(0);
     treeNode.some(function (nodeItem, nodeItemInd) {
 //        console.log(this);
         if (nodeItem.itemId==openItemId){
-            if (nodeItem.folder=="True"){
+            if (nodeItem.folder==="True"){
                 openFolder(_this, e, nodeItem);
             } else if (nodeItem.folder=="False"){
 //                console.log(this);
-                openFile(_this, e, nodeItem);
+//                 openFile(_this, e, nodeItem);
+                openFileFromAngular(_this, e, nodeItem, usergroupId);
             }
             return true;
         } else {
             return false;
         }
     });
-//    this.innerHTML=openItemId;
-//    folderIdPath.append();
 
   }
 
@@ -302,6 +275,9 @@ function prevNode(){
 function getNodeJSON(relativeIndDiff) {
     var successfulSteps = 0;
     var treeNode = dirTreeJSON.dirTree;
+    console.log(dirTreeJSON)
+    console.log(dirTreeJSON.dirTree)
+    console.log(typeof dirTreeJSON.dirTree)
     let start=0;
     let finish=folderIdPath.length + relativeIndDiff;
     let i;
@@ -309,7 +285,7 @@ function getNodeJSON(relativeIndDiff) {
     for (i=start; i<finish; i++){
         let folderId = folderIdPath[i];
         treeNode.some(function (nodeItem, nodeItemInd) {
-            if (nodeItem.folder=='True' && nodeItem.itemId==folderId){
+            if (nodeItem.folder==='True' && nodeItem.itemId===folderId){
                 treeNode=treeNode[nodeItemInd].folderContents;
                 successfulSteps++;
                 return true;
@@ -319,8 +295,10 @@ function getNodeJSON(relativeIndDiff) {
         });
     }
 
-    if (successfulSteps!=folderIdPath.length + relativeIndDiff){
-        throw 'folder ID path mismatch error';
+    if (successfulSteps!==folderIdPath.length + relativeIndDiff){
+        console.log(folderIdPath);
+        console.log("YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+        throw 'folder ID path mismatch error2';
     }
 
     return treeNode
@@ -329,25 +307,31 @@ function getNodeJSON(relativeIndDiff) {
 
 
 function toggleFolderDeposit() {
-    if (toggleFolderDepositButton.innerHTML==" off "){
+    if (toggleFolderDepositButton.innerHTML===" off "){
         folderbehindzindex = 1;
-//        behindItems = document.querySelectorAll('.containerbehind');
-//        behindItems.forEach(function(behindItem) {
-//            behindItem.zIndex = folderbehindzindex;
-//        });
+//
         toggleFolderDepositButton.style.backgroundColor = "rgb(30, 144, 255)";
         toggleFolderDepositButton.innerHTML=" on ";
     } else {
         folderbehindzindex = 3;
-//        behindItems = document.querySelectorAll('.containerbehind');
-//        behindItems.forEach(function(behindItem) {
-//            behindItem.zIndex = folderbehindzindex;
-//        });
+//
         toggleFolderDepositButton.style.backgroundColor = "rgb(211, 211, 211)";
         toggleFolderDepositButton.innerHTML=" off ";
     }
 //    toggleFolderDepositButton
 
+}
+
+function getLatestJSON(){
+    return dirTreeJSON;
+}
+
+function getLatestFolderIdPath(){
+    return folderIdPath;
+}
+
+function clearLatestFolderIdPath(){
+    folderIdPath=[];
 }
 
 function handleDropBackBox (e) { // this is only for folders since when dropping stuff onto files itll use the behind grid
@@ -357,6 +341,10 @@ function handleDropBackBox (e) { // this is only for folders since when dropping
        if (e.stopPropagation) {
          e.stopPropagation(); // stops the browser from redirecting.
        }
+  if (!dragSrcEl || !dragSrcEl.draggable===true){
+    return false;
+  }
+
    //    console.log("ok?????????????")
        if (folderIdPath.length>0){
            let treeNode = getNodeJSON(0);
@@ -390,59 +378,52 @@ let folderIdPath=[];
 let toggleFolderDepositButton;
 let folderbehindzindex = 3;
 let behindItems;
+let userCanDrag;
+let openFileFromAngular;
+let usergroupId;
+
 
 function loadTreeNode() {
-    $("#dirview").empty();
-    $("#dirviewbehind").empty();
-//    console.log('????');
-//    var treeNode = dirTreeJSON.dirTree;
+  console.log("eeeeeeeeee")
+
+  try{
+    console.log($("#dirview_dnd"))
+  } catch (e) {
+    console.log(e)
+  }
+    $("#dirview_dnd").empty();
+    $("#dirviewbehind_dnd").empty();
+  console.log("fffffffffffff")
     var treeNode = getNodeJSON(0);
 
-//    folderIdPath.forEach(function (folderId) {
-//        treeNode.some(function (nodeItem, nodeItemInd) {
-//            if (nodeItem.folder=='True' && nodeItem.itemId==folderId){
-//                treeNode=treeNode[nodeItemInd].folderContents;
-//                successfulSteps++;
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        });
-//
-//
-//    });
-//    if (successfulSteps!=folderIdPath.length){
-//        throw 'folder ID path mismatch error';
-//    }
 
+  console.log("788888888888")
+  console.log(treeNode.type)
 
     treeNode.forEach(function(b) {
-    if (b.folder == 'True'){
+    if (b.folder === 'True'){
 //        console.log("hiii");
-        $("#dirviewbehind").append('<div draggable="false" style="z-index:1" class="behindbox folderbehind behl" id="'+b.itemId+'_0"></div>');
-        $("#dirviewbehind").append('<div draggable="false" style="z-index:1" class="behindbox folderbehind behr" id="'+b.itemId+'_1"></div>');
-        $("#dirview").append('<div draggable="true" style="z-index:2" class="subgrid box folder" id="'+b.itemId+'">'+b.itemName+'</div>');
+        $("#dirviewbehind_dnd").append('<div draggable="false" style="z-index:1" class="behindbox_dnd folderbehind_dnd behl_dnd" id="'+b.itemId+'_0"></div>');
+        $("#dirviewbehind_dnd").append('<div draggable="false" style="z-index:1" class="behindbox_dnd folderbehind_dnd behr_dnd" id="'+b.itemId+'_1"></div>');
+        $("#dirview_dnd").append('<div draggable="'+userCanDrag+'" style="z-index:2" class="subgrid_dnd box_dnd folder_dnd" id="'+b.itemId+'">'+b.itemName+'</div>');
 //        $("#dirview").append('<div draggable="false" class="gap" id="'+b.itemId+'_1"></div>');
     } else if (b.folder == 'False'){
 //        console.log("hiii3333file");
-        $("#dirviewbehind").append('<div draggable="false" class="behindbox behl" style="z-index:1" id="'+b.itemId+'_0"></div>');
-        $("#dirviewbehind").append('<div draggable="false" class="behindbox behr" style="z-index:1" id="'+b.itemId+'_1"></div>');
-        $("#dirview").append('<div draggable="true" style="z-index:2" class="subgrid box" id="'+b.itemId+'">'+b.itemName+'</div>');
+        $("#dirviewbehind_dnd").append('<div draggable="false" class="behindbox_dnd behl_dnd" style="z-index:1" id="'+b.itemId+'_0"></div>');
+        $("#dirviewbehind_dnd").append('<div draggable="false" class="behindbox_dnd behr_dnd" style="z-index:1" id="'+b.itemId+'_1"></div>');
+        $("#dirview_dnd").append('<div draggable="'+userCanDrag+'" style="z-index:2" class="subgrid_dnd box_dnd" id="'+b.itemId+'">'+b.itemName+'</div>');
 //        $("#dirview").append('<div draggable="false" class="gap" id="'+b.itemId+'_1"></div>');
     }})
 
+  console.log("gggggtttttt")
 
-
-    items = document.querySelectorAll('.container .box');
+    items = document.querySelectorAll('.container_dnd .box_dnd');
       items.forEach(function(item) {
 //        console.log(item)
         item.addEventListener('dragstart', handleDragStart, false);
-//        item.addEventListener('dragenter', handleDragEnter, false);
-//        item.addEventListener('dragover', handleDragOver, false);
-//        item.addEventListener('dragleave', handleDragLeave, false);
-//        item.addEventListener('drop', handleDrop, false);
+//
         item.addEventListener('dragend', handleDragEnd, false);
-        if (item.classList.contains("folder")){
+        if (item.classList.contains("folder_dnd")){
 //            console.log(item)
             item.addEventListener('dragenter', handleDragEnter, false);
             item.addEventListener('dragover', handleDragOver, false);
@@ -453,7 +434,7 @@ function loadTreeNode() {
       });
 
 
-      behindItems = document.querySelectorAll('.containerbehind .behindbox');
+      behindItems = document.querySelectorAll('.containerbehind_dnd .behindbox_dnd');
             behindItems.forEach(function(behindItem) {
 //              item.addEventListener('dragstart', handleDragStart, false);
               behindItem.addEventListener('dragenter', handleDragEnter, false);
@@ -463,124 +444,102 @@ function loadTreeNode() {
 //              gapItem.addEventListener('dragend', handleDragEndGap, false);
             });
 
-
-
-
-
-
 };
 
 
 
 
-export function initUserGroupView(responseJSON) {
+function initUserGroupView(responseJSON, userGroupName, userCanDragInp, openFileFromAngularFunc, usergroupIdInp) {
+  console.log("11111111111111111")
+  let contentHeader = document.getElementById('userGroupName');
+  console.log("2222222222222222")
+  contentHeader.innerHTML = userGroupName
+  console.log("333333333333333")
   dirTreeJSON = responseJSON;
+  console.log("4444444444444")
+  console.log(dirTreeJSON)
+  // dirTreeJSON = JSON.parse(responseJSON);
   toggleFolderDepositButton = document.getElementById('toggleFolderDepositButton');
 
-//  var dirTreeString = '{"dirTree":['+
-//    '{"itemName":"file1", "itemId":"4", "fileId":"23odi23jid3", "folder":"False"},'+
-//    '{"itemName":"file2", "itemId":"3", "fileId":"2v2c3c2v", "folder":"False"},'+
-//    '{"itemName":"file6", "itemId":"7", "fileId":"2v2c3t3c2v", "folder":"False"},'+
-//    '{"itemName":"folder1", "itemId":"1", "folder":"True", "folderContents":['+
-//
-//      '{"itemName":"file3", "itemId":"5", "fileId":"vv4iii6t52deg", "folder":"False"},'+
-//      '{"itemName":"file5", "itemId":"6", "fileId":"jj66n6n44gg", "folder":"False"},'+
-//      '{"itemName":"folder2", "itemId":"2", "folder":"True", "folderContents":[]}'+
-//
-//    ']},'+
-//    '{"itemName":"folder3", "itemId":"8", "folder":"True", "folderContents":['+
-//
-//      '{"itemName":"file4", "itemId":"10", "fileId":"vv4vb6nt52deg", "folder":"False"},'+
-//      '{"itemName":"file7", "itemId":"11", "fileId":"jj6v3644gg", "folder":"False"},'+
-//      '{"itemName":"folder4", "itemId":"9", "folder":"True", "folderContents":[]}'+
-//
-//    ']}'+
-//  ']}';
+  usergroupId = usergroupIdInp;
 
-//    var dirTreeString =
+  userCanDrag=userCanDragInp;
+  openFileFromAngular=openFileFromAngularFunc;
 
-
-//  dirTreeJSON = JSON.parse(dirTreeString);
-
-
-  // get list of files in json, if file isnt available anymore, dont add to list, just remove from json and ideally save to db later before user leaves
-  // checking shouldnt be as slow as iterating list of available items, should be O(1) checking db or something
-
-
-
-  // compare to list of available files (will code getting it from db later)
-
-  // all remaining files not in json, put in dirTreeJSON.dirTree
-
-  // maybe save to db here? at least if something was different obv...
-
-
-
-
-
-//  console.log(dirTreeJSON)
-//  dirTreeJSON.dirTree.forEach(function(b) {
-//      if (b.folder == 'True'){
-//          console.log("hiii");
-//          $("#dirview").append('<div draggable="true" class="box folder">'+b.itemName+'</div>');
-//      } else if (b.folder == 'False'){
-//          console.log("hiii3333file");
-//          $("#dirview").append('<div draggable="true" class="box">'+b.itemName+'</div>');
-//      }
-//
-//
-//  });
-
-
-
-//    let backBox = document.getElementById("backbox");
-//    backBox.addEventListener('dblclick', prevNode, false);
-//    backBox.addEventListener('drop', handleDropBackBox, false);
-//    backBox.addEventListener('dragenter', handleDragEnter, false);
-//    backBox.addEventListener('dragover', handleDragOver, false);
-//    backBox.addEventListener('dragleave', handleDragLeave, false);
-
-
-
-
-
-
-
-
-
-//  let items = document.querySelectorAll('.container .box');
-//  items.forEach(function(item) {
-//    item.addEventListener('dragstart', handleDragStart, false);
-//    item.addEventListener('dragenter', handleDragEnter, false);
-//    item.addEventListener('dragover', handleDragOver, false);
-//    item.addEventListener('dragleave', handleDragLeave, false);
-//    item.addEventListener('drop', handleDrop, false);
-//    item.addEventListener('dragend', handleDragEnd, false);
-//    if (item.classList.contains("folder")){
-//        item.addEventListener("dblclick", openFolder);
-//    } else {
-//        item.addEventListener("dblclick", openFile);
-//    }
-//  });
+  console.log("HEeeeeeeeeeeeeeeeeee 111")
 
       loadTreeNode();
 
-
-      let backBox = document.getElementById("backbox");
+  console.log("777777")
+      let backBox = document.getElementById("backbox_dnd");
       backBox.addEventListener('dblclick', prevNode, false);
       backBox.addEventListener('drop', handleDropBackBox, false);
       backBox.addEventListener('dragenter', handleDragEnter, false);
       backBox.addEventListener('dragover', handleDragOver, false);
       backBox.addEventListener('dragleave', handleDragLeave, false);
 
-      document.getElementById('saveJSONbutton').onclick = saveJSON();
-      document.getElementById('toggleFolderDepositButton').onclick = toggleFolderDeposit();
+  console.log("H32d23d23111")
+
+}
+
+
+function clearUserGroupView() {
+  let contentHeader = document.getElementById('userGroupName');
+  contentHeader.innerHTML = "";
+  dirTreeJSON = undefined;
+  toggleFolderDepositButton = undefined;
+
+  usergroupId = undefined;
+
+  userCanDrag=undefined;
+  openFileFromAngular=undefined;
+
+
+  $("#dirview_dnd").empty();
+  $("#dirviewbehind_dnd").empty();
 
 
 
-
-//    loadTreeNode();
-
-};
+}
 
 
+
+// (function( $ ){
+//   console.log("???????????????wwDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDwww");
+//   $.fn.fitText = function( kompressor, options ) {
+//     console.log("???????????????wwDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDwww");
+//     // Setup options
+//     var compressor = kompressor || 1,
+//       settings = $.extend({
+//         'minFontSize' : Number.NEGATIVE_INFINITY,
+//         'maxFontSize' : Number.POSITIVE_INFINITY
+//       }, options);
+//
+//     return this.each(function(){
+//       console.log("???????????????wwDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDwww");
+//       // Store the object
+//       var $this = $(this);
+//
+//       // Resizer() resizes items based on the object width divided by the compressor * 10
+//       var resizer = function () {
+//         console.log("???????????????wwwww");
+//         $this.css('font-size', Math.max(Math.min($this.width() / (compressor*10), parseFloat(settings.maxFontSize)), parseFloat(settings.minFontSize)));
+//
+//       };
+//
+//       // Call once to set.
+//
+//         resizer();
+//
+//       // Call on resize. Opera debounces their resize by default.
+//       $(window).on('resize.fittext orientationchange.fittext', resizer);
+//
+//     });
+//
+//   };
+//
+// })( jQuery );
+
+
+
+module.exports = {toggleFolderDeposit, loadTreeNode, initUserGroupView, getLatestJSON, getLatestFolderIdPath, clearLatestFolderIdPath, clearUserGroupView};

@@ -1,6 +1,7 @@
 export interface UserGroupFull {
   id: number;
   name: string;
-  dirTreeJSON: string;
+  directoryTreeJSON: string;
+  adminUsername: string;
 
 }
