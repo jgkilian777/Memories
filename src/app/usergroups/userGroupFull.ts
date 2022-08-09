@@ -3,5 +3,4 @@ export interface UserGroupFull {
   name: string;
   directoryTreeJSON: string;
   adminUsername: string;
-
 }

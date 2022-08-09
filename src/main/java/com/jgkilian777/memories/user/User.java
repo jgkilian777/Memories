@@ -8,7 +8,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,8 +22,6 @@ public class User {
     private Long id;
 
     @OneToMany(mappedBy = "user")
-//  @OneToMany
-//  @JoinColumn(name = "MEMORY_ID", referencedColumnName = "ID")
     private Set<Memory> memories = new HashSet<>();
 
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
@@ -108,10 +105,5 @@ public class User {
   }
 
   public Set<Memory> getMemories(){return memories;}
-
-//  public getU
-
-
-//  public void addUsergroup??
 
 }

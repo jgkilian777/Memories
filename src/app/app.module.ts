@@ -37,9 +37,6 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatButtonModule} from "@angular/material/button";
 import {MatInputModule} from "@angular/material/input";
 import { ViewUserMemoryModalComponent } from './view-user-memory-modal/view-user-memory-modal.component';
-// import * as bootstrap from "bootstrap";
-// import * as $ from "jquery";
-
 
 @Injectable()
 export class XhrInterceptor implements HttpInterceptor {
@@ -106,7 +103,6 @@ const routes: Routes = [
     MatDialogModule,
     MatButtonModule,
     MatInputModule,
-
 
   ],
   providers: [AppService , { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true }, { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true }],

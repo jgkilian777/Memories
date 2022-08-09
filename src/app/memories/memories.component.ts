@@ -1,14 +1,14 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MemoryService} from "../add-memory-to-usergroup/memory.service";
 import {MemoryItem} from "../add-memory-to-usergroup/memoryItem";
 import {HttpErrorResponse} from "@angular/common/http";
-import {catchError, filter, map, mergeMap, switchMap, throwError} from "rxjs";
-import {clearLatestFolderIdPath} from "../../main/resources/static/drag-and-drop";
+import {catchError, filter, switchMap, throwError} from "rxjs";
 import {RenameMemoryDialog} from "../modify-memories-in-usergroup/modify-memories-in-usergroup.component";
 import {MatDialog} from "@angular/material/dialog";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {ViewMemoryModalComponent} from "../view-memory-modal/view-memory-modal.component";
 import {ViewUserMemoryModalComponent} from "../view-user-memory-modal/view-user-memory-modal.component";
+import {CreateMemoryModalComponent} from "../create-memory-modal/create-memory-modal.component";
+import {StorageService} from "../auth/storage.service";
 
 @Component({
   selector: 'app-memories',
@@ -17,43 +17,51 @@ import {ViewUserMemoryModalComponent} from "../view-user-memory-modal/view-user-
 })
 export class MemoriesComponent implements OnInit {
 
-  constructor(private memoryService: MemoryService, public dialog: MatDialog, private modalService: NgbModal) { }
+  constructor(private memoryService: MemoryService, public dialog: MatDialog, private modalService: NgbModal, private storageService: StorageService) { }
   modifyMemoryFailed=false;
   errorMessage="";
-  renameModalMemoryId: number;
+  getMemoriesFailed=false;
+  getMemoriesError="";
+  isLoggedIn = false;
 
   public memories: MemoryItem[];
   ngOnInit() {
-    this.getMemories();
-  }
+    if (this.storageService.isLoggedIn()) {
+      this.isLoggedIn = true;
+      this.getMemories();
+    }
 
-  @Input() public usergroupId: number;
-  // @Input() public usergroup: UserGroup;
+  }
 
   public getMemories(): void {
     this.memoryService.getMemories().subscribe({
       next: (response: MemoryItem[]) => {
         this.memories = response;
-        console.log(this.memories);
+        this.getMemoriesFailed=false;
       },
       error: (error: HttpErrorResponse) => {
-        alert(error.message);
+        this.getMemoriesError = error.message;
+        this.getMemoriesFailed=true;
       }
     });
 
   }
 
-
+  openCreateMemoryModal() {
+    const modalRef = this.modalService.open(CreateMemoryModalComponent);
+    modalRef.componentInstance.memories = this.memories;
+    modalRef.componentInstance.memoriesChange.subscribe(
+      (newMemories: MemoryItem[]) => {
+        this.memories = newMemories;
+      }
+    )
+  }
 
 
   viewMemory(memoryId: number){
     const modalRef = this.modalService.open(ViewUserMemoryModalComponent);
-    // modalRef.componentInstance.usergroupId = usergroupId;
     modalRef.componentInstance.fileId = memoryId;
   }
-
-
-
 
 
   deleteMemory(memoryId: number){
@@ -63,41 +71,30 @@ export class MemoriesComponent implements OnInit {
             return this.memoryService.getMemories();
           }
         ),
-
         catchError(error => {
-          console.log(error);
           return throwError(error);
         })
       )
-
       .subscribe({
         next: (response: MemoryItem[]) => {
-          console.log(response);
           this.memories = response;
           this.modifyMemoryFailed=false;
         },
         error: (err: any) => {
-          console.log(err);
           this.modifyMemoryFailed=true;
-          this.errorMessage=err;
+          this.errorMessage=err.message;
         }
-
       });
   }
 
   openRenameMemoryModal(memoryId: number){
-    this.renameModalMemoryId = memoryId;
-
     const dialogRef = this.dialog.open(RenameMemoryDialog, {
       width: '250px',
-      // data: {name: this.name, animal: this.animal},
       panelClass: 'rename-dialog',
       backdropClass: 'rename-dialog-backdrop',
-      // autoFocus: true,
     });
 
     dialogRef.afterClosed().pipe(
-      // map((x) => {console.log(x); console.log("???????????????????"); return x;}),
       filter((newName) => newName!==null&&newName!==undefined),
       switchMap(newName => {
         return this.memoryService.renameMemory(memoryId, newName)
@@ -107,51 +104,20 @@ export class MemoriesComponent implements OnInit {
         }
       ),
       catchError(error => {
-        console.log(error);
         return throwError(error);
       })
     )
       .subscribe({
         next: (result: MemoryItem[]) => {
-          console.log(result);
           this.memories = result;
           this.modifyMemoryFailed=false;
         },
         error: (err) => {
-          console.log(err);
           this.modifyMemoryFailed=true;
-          this.errorMessage=err;
+          this.errorMessage=err.message;
         }
       });
 
-
   }
-
-
-
-
-  renameMemory(memoryId: number, newName: string){
-    this.memoryService.renameMemory(memoryId, newName).subscribe({
-      next: (response: any) => {
-        console.log(response);
-        this.modifyMemoryFailed=false;
-      },
-      error: (err: any) => {
-        console.log(err);
-        this.modifyMemoryFailed=true;
-        this.errorMessage=err;
-      }
-    });
-  }
-
-
-
-
-
-
-
-
-
-
 
 }

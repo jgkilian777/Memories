@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {catchError, filter, map, mergeMap, Observable, Observer, Subject, switchMap, throwError} from 'rxjs';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
+import {catchError, filter, map, mergeMap, Observable, Subject, switchMap, throwError} from 'rxjs';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {UserGroup} from "../usergroups/userGroup";
 import {UserGroupFull} from "../usergroups/userGroupFull";
 import {
@@ -12,20 +12,12 @@ import {
   toggleFolderDeposit,
   clearUserGroupView
 } from "../../main/resources/static/drag-and-drop";
-// import * as $ from 'jquery';
-// declare let jQuery: any;
-
-// import {$, jquery} from "jquery";
-// import 'bootstrap';
-// declare var $:any;
-// import $ from 'jquery';
 
 import {
   CreateAndAddMemoryToUsergroupModalComponent
 } from "../create-and-add-memory-to-usergroup-modal/create-and-add-memory-to-usergroup-modal.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {AddMemoryToUsergroupComponent} from "../add-memory-to-usergroup/add-memory-to-usergroup.component";
-import {LoadUserGroupResponse} from "./loadUserGroupResponse";
 import {UserInGroupView} from "./userInGroupView";
 import {PendingUserInGroupView} from "./pendingUserInGroupView";
 import {InviteUserToUserGroupRequest} from "./inviteUserToUserGroupRequest";
@@ -35,9 +27,8 @@ import {
 import {StorageService} from "../auth/storage.service";
 import {MemoryService} from "../add-memory-to-usergroup/memory.service";
 import {
-  ModifyMemoriesInUsergroupComponent, RenameMemoryDialog
+  ModifyMemoriesInUsergroupComponent
 } from "../modify-memories-in-usergroup/modify-memories-in-usergroup.component";
-import {MemoryItem} from "../add-memory-to-usergroup/memoryItem";
 import {MatDialog} from "@angular/material/dialog";
 import {RenameUserGroupDialog} from "./usergroup.component";
 
@@ -48,22 +39,11 @@ const httpOptions = {
 };
 
 
-
-
 @Injectable({
   providedIn: 'root'
 })
+
 export class UserGroupService {
-
-  private loadUserGroupResponseSubject: Subject<LoadUserGroupResponse> = new Subject<LoadUserGroupResponse>();
-
-  setLoadUserGroupResponse(loadUserGroupResponse: LoadUserGroupResponse){
-    this.loadUserGroupResponseSubject.next(loadUserGroupResponse);
-  }
-  getLoadUserGroupResponse(): Observable<LoadUserGroupResponse>{
-    return this.loadUserGroupResponseSubject;
-  }
-
 
   private loadUserGroupIdSubject:  Subject<number> = new Subject<number>();
 
@@ -72,15 +52,6 @@ export class UserGroupService {
   }
   getLoadUserGroupId(): Observable<number>{
     return this.loadUserGroupIdSubject;
-  }
-
-  private loadUserGroupUsersSubject:  Subject<boolean> = new Subject<boolean>();
-
-  setLoadUserGroupUsers(junk: boolean){
-    this.loadUserGroupUsersSubject.next(junk);
-  }
-  getLoadUserGroupUsers(): Observable<boolean>{
-    return this.loadUserGroupUsersSubject;
   }
 
   private loadUserGroupPendingUsersSubject:  Subject<boolean> = new Subject<boolean>();
@@ -101,67 +72,13 @@ export class UserGroupService {
     return this.loadUserGroupsSubject;
   }
 
-
-  // public loadUserGroupResponseObservable = new Observable<LoadUserGroupResponse>();
-  // private loadUserGroupResponse: LoadUserGroupResponse;
-
-  // setLoadUserGroupResponse(loadUserGroupSuccess: boolean, err: String){
-  //   this.loadUserGroupResponseObservable.next({"loadUserGroupSuccess": loadUserGroupSuccess, "err": err});
-  // }
-
-  // loadUserGroupResponseSubscriber(observer: Observer<LoadUserGroupResponse>){
-  //   observer.next(this.loadUserGroupResponse);
-  //   observer.complete();
-  //   return {unsubscribe() {}};
-  // }
-
-
-
-  isSuccessful = false;
-  isSaveJSONFailed = false;
-  errorMessage = '';
-  submittedSomething = false;
-  // userGroupLoadFailed=false;
-  // dirTreeJSON: JSON;
-
   constructor(private http: HttpClient, private modalService: NgbModal, private storageService: StorageService, private memoryService: MemoryService, public dialog: MatDialog) { }
-
-  // public getUserGroups(): Observable<UserGroup[]> {
-  //   return this.http.get<UserGroup[]>(apiServerUrl+'/usergroups');
-  //
-  // }
-
-  // public getUserGroup(userGroupId: number): Observable<UserGroup> {
-  //   return this.http.get<UserGroup>(apiServerUrl+'/usergroups/${userGroupId}');
-  //
-  // }
-
-
-  // public loadUserGroupFull(usergroupId: number): Observable<any> {
-  //   this.usergroupService.unHookButtons();
-  //   console.log("HERE 111 111 111 111")
-  //   clearLatestFolderIdPath();
-  //   return this.usergroupService.loadUserGroup(usergroupId).pipe(
-  //     map(response => {
-  //       console.log("HERE 555 5555555");
-  //       this.usergroupService.hookButtons(usergroupId);
-  //       return response;
-  //     })
-  //   this.requiredUserGroup=2;
-  //
-  //   )
-  //
-  //
-  //
-  // }
 
   public loadUserGroupFull(usergroupId: number, currUserName: string): Observable<any> {
     this.unHookButtons();
-    console.log("HERE 111 111 111 111")
     clearLatestFolderIdPath();
     return this.loadUserGroup(usergroupId, currUserName).pipe(
       map(response => {
-        console.log("HERE 555 5555555");
         this.hookButtons(usergroupId);
         return response;
       })
@@ -172,22 +89,17 @@ export class UserGroupService {
 
     return this.http.get<UserGroupFull>(apiServerUrl+'/usergroups/'+usergroupId).pipe(
 
-    map(response => {
-      console.log("HERE 44444");
-      console.log(response)
-      let userCanDrag: boolean;
-      if (currUserName===response.adminUsername){
-        userCanDrag=true;
-      } else {
-        userCanDrag=false;
-      }
-      initUserGroupView(JSON.parse(response.directoryTreeJSON), response.name, userCanDrag, this.memoryService.openFileFromAngular.bind(this.memoryService), usergroupId);
-          console.log(response.directoryTreeJSON);
-          console.log("HERE 222 222 222 222");
-          return response;
-    })
+      map(response => {
+        let userCanDrag: boolean;
+        if (currUserName===response.adminUsername){
+          userCanDrag=true;
+        } else {
+          userCanDrag=false;
+        }
+        initUserGroupView(JSON.parse(response.directoryTreeJSON), response.name, userCanDrag, this.memoryService.openFileFromAngular.bind(this.memoryService), usergroupId);
+        return response;
+      })
     );
-
   }
 
   public createUserGroup(adminUsername: string, usergroupName: string): Observable<any> {
@@ -204,9 +116,7 @@ export class UserGroupService {
   public acceptUserGroupInvite(usergroupId: number){
     return this.http.post(
       apiServerUrl + '/usergroups/acceptusergroupinvite',
-
         usergroupId,
-
       httpOptions
     );
   }
@@ -214,20 +124,16 @@ export class UserGroupService {
   public declineUserGroupInvite(usergroupId: number){
     return this.http.post(
       apiServerUrl + '/usergroups/declineusergroupinvite',
-
         usergroupId,
-
       httpOptions
     );
   }
 
   public cancelPendingUserInvite(username: string, usergroupId: number){
-    let inviteUserToUserGroupRequest: InviteUserToUserGroupRequest = {username:username, usergroupId:usergroupId}
+    let cancelPendingUserFromUserGroupRequest: InviteUserToUserGroupRequest = {username:username, usergroupId:usergroupId}
     return this.http.post(
       apiServerUrl + '/usergroups/removeinviteuser',
-
-        inviteUserToUserGroupRequest,
-
+      cancelPendingUserFromUserGroupRequest,
       httpOptions
     );
   }
@@ -236,30 +142,22 @@ export class UserGroupService {
     let inviteUserToUserGroupRequest: InviteUserToUserGroupRequest = {username:username, usergroupId:usergroupId}
     return this.http.post(
       apiServerUrl + '/usergroups/inviteuser',
-
         inviteUserToUserGroupRequest,
-
       httpOptions
     );
   }
 
   public removeUserFromUserGroup(username: string, usergroupId: number){
-    let inviteUserToUserGroupRequest: InviteUserToUserGroupRequest = {username:username, usergroupId:usergroupId}
-    console.log(inviteUserToUserGroupRequest);
-    console.log(username);
-    console.log(usergroupId);
+    let removeUserToUserGroupRequest: InviteUserToUserGroupRequest = {username:username, usergroupId:usergroupId}
     return this.http.post(
       apiServerUrl + '/usergroups/removeuser',
-
-        inviteUserToUserGroupRequest,
-
+      removeUserToUserGroupRequest,
       httpOptions
     );
   }
 
 
   public unHookButtons(): void {
-    console.log("UNHOOKED BUTTONS UNHOOKED BUTTONS UNHOOKED BUTTONS UNHOOKED BUTTONS UNHOOKED BUTTONS ")
     let saveJSONbutton = document.getElementById('saveJSONbutton');
     let toggleFolderDepositButton = document.getElementById('toggleFolderDepositButton');
     let createFolderButton = document.getElementById('createFolderButton');
@@ -270,7 +168,6 @@ export class UserGroupService {
     let inviteUserToUserGroupButton = document.getElementById('inviteUserToUserGroupButton');
     let deleteUserGroupButton = document.getElementById('deleteUserGroupButton');
     if (saveJSONbutton !== null && deleteUserGroupButton !== null && renameUserGroupButton !== null && toggleFolderDepositButton !== null && createFolderButton !== null && addMemoriesButton !== null && createAndAddMemoriesButton !== null && inviteUserToUserGroupButton !== null && modifyMemoriesForUserGroupButton !== null){
-      // saveJSONbutton.onclick = null;
       saveJSONbutton.removeAttribute("data-usergroupId");
       saveJSONbutton.removeEventListener('click', this.saveJSONBind);
 
@@ -295,10 +192,6 @@ export class UserGroupService {
       deleteUserGroupButton.removeAttribute("data-usergroupId");
       deleteUserGroupButton.removeEventListener('click', this.deleteUserGroupBind);
 
-
-      // toggleFolderDepositButton.onclick = null;
-      // createFolderButton.onclick = null;
-      // addMemoriesButton.onclick = null;
     } else {
       throw 'a button is missing';
     }
@@ -315,7 +208,6 @@ export class UserGroupService {
 
 
   public hookButtons(usergroupId: number): void{
-    console.log("HOOK BUTTONS HOOK BUTTONS HOOK BUTTONS HOOK BUTTONS HOOK BUTTONS HOOK BUTTONS HOOK BUTTONS ")
     let saveJSONbutton = document.getElementById('saveJSONbutton');
     let toggleFolderDepositButton = document.getElementById('toggleFolderDepositButton');
     let createFolderButton = document.getElementById('createFolderButton');
@@ -363,80 +255,12 @@ export class UserGroupService {
     } else {
       throw 'a button is missing';
     }
-    // let jQuery: any;
-
-    // console.log($('.subgrid_dnd'));
-
-    // $('.subgrid_dnd').fitText();
-    //
-    // console.log(jQuery('.box_dnd'));
-    //
-    // console.log(jQuery(".fullcontainer_dnd"));
-    //
-    // console.log(jQuery("#addMemoriesButton"));
-
-
-
-
-
-
   }
 
-
-
-
-
-
-
-
-  public saveJSONObservable(usergroupId: number): Observable<any>{
-    let dirTreeJSON = getLatestJSON();
-    console.log(dirTreeJSON);
-    let saveJSONObservable: Observable<any> = this.http.post<UserGroup>(
-      apiServerUrl + '/usergroups/savedirstructure/' + usergroupId,
-      {
-        dirTreeJSON,
-      },
-      httpOptions
-    ).pipe(
-        map(response => {
-          console.log(response);
-          this.isSuccessful = true;
-          this.isSaveJSONFailed = false;
-          this.submittedSomething = true;
-
-          return response;
-          }
-        ),
-        mergeMap(response => {
-          clearLatestFolderIdPath();
-          return this.loadUserGroup(usergroupId, this.storageService.getUser().username);
-        })
-
-
-      );
-      return saveJSONObservable;
-    // response.subscribe({
-    //   next: data => {
-    //     console.log(data);
-    //     this.isSuccessful = true;
-    //     this.isSaveJSONFailed = false;
-    //     this.submittedSomething = true;
-    //     this.loadUserGroup(usergroupId);
-    //   },
-    //   error: err => {
-    //     console.log(err);
-    //     this.errorMessage = err.error.message;
-    //     this.submittedSomething = true;
-    //     this.isSaveJSONFailed = true;
-    //   }
-    // });
-  }
 
   public getUserGroupUsers(usergroupId: number): Observable<UserInGroupView[]> {
     return this.http.get<UserInGroupView[]>(apiServerUrl+'/usergroups/'+usergroupId+'/users')
   }
-
 
   public getPendingUserGroupUsers(usergroupId: number): Observable<PendingUserInGroupView[]> {
     return this.http.get<PendingUserInGroupView[]>(apiServerUrl+'/usergroups/'+usergroupId+'/pendingusers')
@@ -445,7 +269,6 @@ export class UserGroupService {
   private saveJSON(e: any): void{
     let usergroupId = Number(e.target.getAttribute("data-usergroupId"));
     let dirTreeJSON = getLatestJSON();
-    console.log(dirTreeJSON);
     let response: Observable<any> = this.http.post<UserGroup>(
       apiServerUrl + '/usergroups/savedirstructure/' + usergroupId,
       {
@@ -454,33 +277,18 @@ export class UserGroupService {
       httpOptions
       ).pipe(
         mergeMap( response2 => {
-          console.log(response2);
-          this.isSuccessful = true;
-          this.isSaveJSONFailed = false;
-          this.submittedSomething = true;
           clearLatestFolderIdPath();
-          console.log("CLEARED LATEST FOLDERID PATH1")
           return this.loadUserGroup(usergroupId, this.storageService.getUser().username);
           }
         ),
       catchError(error => {
-        console.log(error);
         return throwError(error);
       })
       )
     response.subscribe({
       next: data => {
-        console.log(data);
-        // this.isSuccessful = true;
-        // this.isSaveJSONFailed = false;
-        // this.submittedSomething = true;
-        // this.loadUserGroup(usergroupId);
       },
       error: err => {
-        console.log(err);
-        this.errorMessage = err.error.message;
-        this.submittedSomething = true;
-        this.isSaveJSONFailed = true;
       }
     });
   }
@@ -494,51 +302,34 @@ export class UserGroupService {
     let newFolder = {"itemName": "newFolder", "itemId": String(this.highestItemId+1), "folder": "True", "folderContents":[]};
     currTreeNode.push(newFolder);
     loadTreeNode();
-
   }
 
   private deleteUserGroup(e: any){
     const userGroupId = Number(e.target.getAttribute("data-usergroupId"));
     this.http.delete(
       apiServerUrl + '/usergroups/delete/' + userGroupId,
-
       httpOptions
-    ).pipe(
-
     ).subscribe({
       next: (response) => {
         this.setLoadUserGroups(true);
         clearUserGroupView();
     },
       error: (err) => {
-        console.log(err);
         alert(err);
       }
   })
   }
 
   private findHighestItemId(dirTreeJSON: any[]): void{
-    // dirTreeJSON.forEach(this.checkFolder);
-    // var highestItemId = 0;
     dirTreeJSON.every((x) => this.checkFolder(x), this);
-
   }
 
   private checkFolder(b: any){
     if (Number(b.itemId)>this.highestItemId){
-      console.log("THIS SHOULD NEVER BE UNDEFINED:");
-      console.log(Number(b.itemId));
       this.highestItemId = Number(b.itemId);
     }
     if (b.folder === "True"){
-
       this.findHighestItemId(b.folderContents)
-    } else if (b.folder === "False"){
-      if (Number(b.itemId)>this.highestItemId){
-        // console.log("THIS SHOULD NEVER BE UNDEFINED:");
-        // console.log(Number(b.itemId));
-        // this.highestItemId = Number(b.itemId);
-      }
     }
     return true;
   }
@@ -560,70 +351,44 @@ export class UserGroupService {
   }
 
   private renameUserGroup(usergroupId: number, newName: string){
-    // const formData = new FormData();
-    // formData.append("newName", newName);
     return this.http.put(
       apiServerUrl + '/usergroups/rename/' + usergroupId,
-
       {"newName": newName},
-
       httpOptions
     )
   }
 
   private openRenameUserGroupModal(e: any): void{
-    // openRenameMemoryModal(memoryId: number){
-    //   this.renameModalMemoryId = memoryId;
-
       const dialogRef = this.dialog.open(RenameUserGroupDialog, {
         width: '250px',
-        // data: {name: this.name, animal: this.animal},
         panelClass: 'rename-dialog',
         backdropClass: 'rename-dialog-backdrop',
-        // autoFocus: true,
       });
 
     const usergroupId = Number(e.target.getAttribute("data-usergroupId"));
+    dialogRef.afterClosed().pipe(
+      filter((newName) => newName!==null&&newName!==undefined),
+      switchMap((newName) => {
+        return this.renameUserGroup(usergroupId, newName);
+      }),
 
-      dialogRef.afterClosed().pipe(
-        filter((newName) => newName!==null&&newName!==undefined),
-        switchMap((newName) => {
-
-          return this.renameUserGroup(usergroupId, newName);
-        }),
-
-        catchError(error => {
-          console.log(error);
-          return throwError(error);
-        })
-      )
-        .subscribe({
-          next: (result) => {
-            console.log(result);
-            // this.memories = result;
-            // this.modifyMemoryFailed=false;
-            this.setLoadUserGroups(true);
-            this.setLoadUserGroupId(usergroupId);
-          },
-          error: (err) => {
-            console.log(err);
-            alert(err);
-            // this.modifyMemoryFailed=true;
-            // this.errorMessage=err;
-          }
-        });
-
-
-
-
+      catchError(error => {
+        return throwError(error);
+      })
+    )
+      .subscribe({
+        next: (result) => {
+          this.setLoadUserGroups(true);
+          this.setLoadUserGroupId(usergroupId);
+        },
+        error: (err) => {
+          alert(err);
+        }
+      });
   }
 
   private openAddMemoriesModal(e: any): void {
-    // console.log(e)
-    // console.log(typeof e)
     const modalRef = this.modalService.open(AddMemoryToUsergroupComponent);
-    // console.log(e)
-    // console.log(typeof e)
     modalRef.componentInstance.usergroupId = Number(e.target.getAttribute("data-usergroupId"));
   }
 
@@ -647,14 +412,9 @@ export class UserGroupService {
         }
       });
     }
-
     if (successfulSteps!=folderIdPath.length){
       throw 'folder ID path mismatch error1';
     }
-
     return treeNode
-
   }
-
-
 }

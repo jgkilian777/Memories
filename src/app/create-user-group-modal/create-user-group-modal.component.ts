@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
-import {AuthService} from "../auth/auth.service";
 import {StorageService} from "../auth/storage.service";
 import {UserGroupService} from "../usergroup/user-group.service";
+import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-create-user-group-modal',
@@ -13,13 +12,13 @@ export class CreateUserGroupModalComponent implements OnInit {
   form: any = {
     usergroupname: null,
   };
-  isSuccessful = false;
+
+  formSubmitted=false;
   isUserGroupCreationFailed = false;
   errorMessage = '';
-  constructor(public activeModal: NgbActiveModal,  private storageService: StorageService, private usergroupService: UserGroupService) { }
+  constructor(private storageService: StorageService, private usergroupService: UserGroupService, public activeModal: NgbActiveModal) { }
 
 
-  // constructor(private authService: AuthService) { }
   ngOnInit(): void {
   }
   onSubmit(): void {
@@ -27,12 +26,10 @@ export class CreateUserGroupModalComponent implements OnInit {
     const adminUsername = this.storageService.getUser().username;
     this.usergroupService.createUserGroup(adminUsername, usergroupname).subscribe({
       next: data => {
-        console.log(data);
-        this.isSuccessful = true;
         this.isUserGroupCreationFailed = false;
+        this.formSubmitted=true;
       },
       error: err => {
-        console.log(err);
         this.errorMessage = err.error.message;
         this.isUserGroupCreationFailed = true;
       }

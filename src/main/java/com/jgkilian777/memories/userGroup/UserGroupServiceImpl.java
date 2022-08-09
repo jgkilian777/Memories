@@ -4,7 +4,6 @@ import com.jgkilian777.memories.handleJSON.HandleJSON;
 import com.jgkilian777.memories.memory.Memory;
 import com.jgkilian777.memories.memory.MemoryRepository;
 import com.jgkilian777.memories.security.AuthUtils;
-import com.jgkilian777.memories.security.AuthenticationFacadeImpl;
 import com.jgkilian777.memories.security.MessageResponse;
 import com.jgkilian777.memories.user.User;
 import com.jgkilian777.memories.user.UserRepository;
@@ -35,9 +34,6 @@ public class UserGroupServiceImpl implements UserGroupService{
   @Autowired
   MemoryRepository memoryRepository;
 
-  @Autowired
-  private AuthenticationFacadeImpl authenticationFacadeImpl;
-
   @Override
   public List<UserGroupMinView> getUserGroupsMinView(User user) {
     return userGroupRepository.findUserGroupsByUsers(user);
@@ -47,7 +43,6 @@ public class UserGroupServiceImpl implements UserGroupService{
   public List<UserGroupMinView> getPendingUserGroupsMinView(User user) {
     return userGroupRepository.findPendinguserGroupsByPendingusers(user);
   }
-
 
   @Override
   public Set<UserInUserGroupView> getUsersInUserGroupView(Long userGroupId) {
@@ -73,18 +68,13 @@ public class UserGroupServiceImpl implements UserGroupService{
     if(userAndUserGroup==null){
       throw new RuntimeException("somehow unauthorised");
     }
-
     Optional<UserGroupJSONView> optionalUserGroupJSONView = userGroupRepository.findJSONViewById(userGroupId);
     if(!optionalUserGroupJSONView.isPresent()){
       throw new RuntimeException("somehow usergroup instantly disappeared");
     }
-
     UserGroupJSONView userGroupJSONView = optionalUserGroupJSONView.get();
-
     userGroupJSONView.setAdminUsername(userAndUserGroup.userGroup.getAdmin().getUsername());
-
     return userGroupJSONView;
-
   }
 
   @Override
@@ -93,18 +83,13 @@ public class UserGroupServiceImpl implements UserGroupService{
     if(userAndUserGroup==null){
       throw new RuntimeException("somehow unauthorised");
     }
-
     if (!userServiceImpl.userIsAdminOfGroup(userAndUserGroup)){
       throw new RuntimeException("not admin");
     }
-
     boolean succeeded =  verifyAndUpdateDirTree(dirTreeJSON, userAndUserGroup.userGroup); // modifies dirTreeJSON
     if (succeeded){
-      System.out.println(dirTreeJSON);
-      System.out.println(dirTreeJSON.toString());
       userAndUserGroup.userGroup.setDirectoryTreeJSON(dirTreeJSON.toString());
       userGroupRepository.save(userAndUserGroup.userGroup);
-      System.out.println(userAndUserGroup.userGroup.getDirectoryTreeJSON());
       return true;
     }
     return false;
@@ -114,11 +99,9 @@ public class UserGroupServiceImpl implements UserGroupService{
   @Override
   public boolean saveDirTree(Long userGroupId) {
     UserAndUserGroup userAndUserGroup = userServiceImpl.principalCanAccessUserGroupId(userGroupId);
-    System.out.println(" ABOUT TO TRANSACT ABOUT TO TRANSACT ABOUT TO TRANSACT ABOUT TO TRANSACT ABOUT TO TRANSACT ABOUT TO TRANSACT 1111111");
     if(userAndUserGroup==null){
       throw new RuntimeException("somehow unauthorised");
     }
-    System.out.println(" ABOUT TO TRANSACT ABOUT TO TRANSACT ABOUT TO TRANSACT ABOUT TO TRANSACT ABOUT TO TRANSACT ABOUT TO TRANSACT ");
     boolean succeeded =  refreshDirTreeTransactional(userGroupId); // modifies dirTreeJSON
     return succeeded;
   }
@@ -135,8 +118,6 @@ public class UserGroupServiceImpl implements UserGroupService{
     HandleJSON handleJSON = new HandleJSON(memories, memoryRepository);
     JSONObject dirTreeJSONObject = new JSONObject(usergroup.getDirectoryTreeJSON());
     boolean response = handleJSON.verifyAndCleanDirTreeJSON(dirTreeJSONObject);
-    System.out.println("ABOUT TO SET DIR TREE AND SAVE TO REPO");
-    System.out.println(response);
     if (response){
       usergroup.setDirectoryTreeJSON(dirTreeJSONObject.toString());
       userGroupRepository.save(usergroup);
@@ -150,11 +131,9 @@ public class UserGroupServiceImpl implements UserGroupService{
     if(userAndUserGroup==null){
       throw new RuntimeException("somehow unauthorised");
     }
-
     if (!userServiceImpl.userIsAdminOfGroup(userAndUserGroup)){
       return ResponseEntity.badRequest().body(new MessageResponse("Error: you are not an admin of this group!"));
     }
-
     Optional<User> optionalPendingUser = userRepository.findByUsername(inviteUserToUserGroupRequest.getUsername());
     if (!optionalPendingUser.isPresent()){
       throw new RuntimeException("somehow pending user doesnt exist");
@@ -165,13 +144,6 @@ public class UserGroupServiceImpl implements UserGroupService{
     userAndUserGroup.userGroup.addPendingUser(optionalPendingUser.get());
     userGroupRepository.save(userAndUserGroup.userGroup);
     return ResponseEntity.ok(new MessageResponse("User invited to group successfully!"));
-
-//  if true{
-//    return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
-//
-//  } else {
-//    return ResponseEntity.badRequest().body(new MessageResponse("Error: usergroup admin user error!"));
-//  }
   }
 
   @Override
@@ -180,15 +152,12 @@ public class UserGroupServiceImpl implements UserGroupService{
     if(userAndUserGroup==null){
       throw new RuntimeException("somehow unauthorised");
     }
-
     if (!userServiceImpl.userIsAdminOfGroup(userAndUserGroup)){
       return ResponseEntity.badRequest().body(new MessageResponse("Error: you are not an admin of this group!"));
     }
-
     if (!userServiceImpl.userIsAdminOfGroup(userAndUserGroup)){
       return ResponseEntity.badRequest().body(new MessageResponse("Error: you are not an admin of this group!"));
     }
-
     Optional<User> optionalPendingUser = userRepository.findByUsername(inviteUserToUserGroupRequest.getUsername());
     if (!optionalPendingUser.isPresent()){
       throw new RuntimeException("somehow pending user doesnt exist");
@@ -205,11 +174,9 @@ public class UserGroupServiceImpl implements UserGroupService{
     if(userAndUserGroup==null){
       throw new RuntimeException("somehow unauthorised");
     }
-
     if (!userServiceImpl.userIsAdminOfGroup(userAndUserGroup)){
       return ResponseEntity.badRequest().body(new MessageResponse("Error: you are not an admin of this group!"));
     }
-
     Optional<User> optionalRemoveUser = userRepository.findByUsername(inviteUserToUserGroupRequest.getUsername());
     if (!optionalRemoveUser.isPresent()){
       throw new RuntimeException("somehow user doesnt exist");
@@ -219,7 +186,6 @@ public class UserGroupServiceImpl implements UserGroupService{
       throw new RuntimeException("attempting to remove admin from usergroup users");
     }
     userAndUserGroup.userGroup.removeUser(removeUser);
-//    this.saveDirTree(inviteUserToUserGroupRequest.getUsergroupId());
     userGroupRepository.save(userAndUserGroup.userGroup);
     this.saveDirTree(inviteUserToUserGroupRequest.getUsergroupId());
     return ResponseEntity.ok(new MessageResponse("User removed from group successfully!"));
@@ -260,11 +226,8 @@ public class UserGroupServiceImpl implements UserGroupService{
     if (userGroupInstance.getAdmin()!=userInstance){
       throw new RuntimeException("user isnt admin of this group!");
     }
-
     userGroupInstance.setName(newName);
     userGroupRepository.save(userGroupInstance);
-
-
   }
 
   @Override
@@ -278,31 +241,17 @@ public class UserGroupServiceImpl implements UserGroupService{
     if (userGroupInstance.getAdmin()!=userInstance){
       throw new RuntimeException("user isnt admin of this group!");
     }
-
-
-    // delete and manually cascade and shit
     userGroupRepository.delete(userGroupInstance); // Since UserGroup is the owner in all of its relations, can simply delete without manually removing its references?
-
-  }
-
-  @Transactional
-  @Override
-  public void deleteUserGroupTransactional(UserGroup userGroup){
-
   }
 
   @Override
   public boolean verifyAndUpdateDirTree(JSONObject dirTreeJSON, UserGroup usergroup) { // modifies dirTreeJSON
 //    prune unauthorised files
 //    add authorised files to base that arent in any folders already
-//      ...
-
     Set<Memory> memories = usergroup.getMemories();
     HandleJSON handleJSON = new HandleJSON(memories, memoryRepository);
     boolean response = handleJSON.verifyAndCleanDirTreeJSON(dirTreeJSON);
     return response;
-
   }
-
-
 }
+

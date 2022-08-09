@@ -1,15 +1,9 @@
 import { Injectable } from '@angular/core';
-import {catchError, mergeMap, Observable, throwError} from "rxjs";
-import {UserGroup} from "../usergroups/userGroup";
+import {catchError, map, mergeMap, Observable, throwError} from "rxjs";
 import {MemoryItem} from "./memoryItem";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {UsergroupsService} from "../usergroups/usergroups.service";
 import {AddToUserGroupRequest} from "./addToUserGroupRequest";
-import {UserGroupService} from "../usergroup/user-group.service";
 import { clearLatestFolderIdPath } from 'src/main/resources/static/drag-and-drop';
-import {
-  CreateAndAddMemoryToUsergroupModalComponent
-} from "../create-and-add-memory-to-usergroup-modal/create-and-add-memory-to-usergroup-modal.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ViewMemoryModalComponent} from "../view-memory-modal/view-memory-modal.component";
 
@@ -28,7 +22,6 @@ export class MemoryService {
 
   public getMemories(): Observable<MemoryItem[]> {
     return this.http.get<MemoryItem[]>(apiServerUrl+'/memories/all');
-
   }
 
   public getUserMemoriesInUserGroup(usergroupId: number): Observable<MemoryItem[]> {
@@ -44,87 +37,24 @@ export class MemoryService {
     return this.http.delete(apiServerUrl+'/memories/deletememory/'+memoryId);
   }
 
-  public openFileFromAngular(_this: any, e: any, nodeItem: any, usergroupId: number){
-    // console.log(_this);
-    // console.log(e);
-    // console.log(nodeItem);
-    // console.log(this);
+  public openFileFromAngular(nodeItem: any, usergroupId: number){
     let fileId = nodeItem.fileId;
-    // usergroupId
     const modalRef = this.modalService.open(ViewMemoryModalComponent);
     modalRef.componentInstance.usergroupId = usergroupId;
     modalRef.componentInstance.fileId = fileId;
   }
 
   public removeMemoryFromUserGroup(memoryId: number, usergroupId: number){
-
-    let addToUserGroupRequest: AddToUserGroupRequest = {usergroupId: usergroupId, memoryId: memoryId, refreshDirTreeJSON: true};
-
-    return this.http.post(apiServerUrl+'/memories/removefromusergroup', addToUserGroupRequest, httpOptions);
+    let removeFromUserGroupRequest: AddToUserGroupRequest = {usergroupId: usergroupId, memoryId: memoryId, refreshDirTreeJSON: true};
+    return this.http.post(apiServerUrl+'/memories/removefromusergroup', removeFromUserGroupRequest, httpOptions);
   }
 
-
-  public addMemoryToUsergroup(usergroupId: number, memoryId: number, _this: any, currUserName: string){
-
-    // const formData = new FormData();
-    // formData.append("ddd3", "ddd3");
-    // formData.append("ddd4", "ddd4");
+  public addMemoryToUsergroup(usergroupId: number, memoryId: number){
     let addToUserGroupRequest: AddToUserGroupRequest = {usergroupId: usergroupId, memoryId: memoryId, refreshDirTreeJSON: true};
-
-    let response = this.http.post(apiServerUrl+'/memories/addtousergroup', addToUserGroupRequest, httpOptions);
-
-    // let response = this.http.post(apiServerUrl+"/memories/addtousergroup",
-      // formData,
-
-      // {
-      //   "usergroupId": String(usergroupId),
-      //   "memoryId": String(memoryId),
-      // },
-
-      // addToUserGroupRequest,
-
-      // httpOptions);
-    // console.log(response);
-    // console.log(response);
-    // console.log(response);
-    // console.log(response);
-    // console.log(response);
-    // console.log(response);
-    // console.log(response.subscribe());
-
-
-    response.pipe(
-      // mergeMap(success => {
-        // return this.usergroupService.saveJSONObservable(usergroupId);
-        // return this.usergroupService.addMemoryToJSON(usergroupId);
-      // }),
-      mergeMap(success => {
-
-        console.log("CLEARED LATEST FOLDERID PATH2")
-        clearLatestFolderIdPath();
-        return _this.usergroupService.loadUserGroupFull(usergroupId, currUserName);
-      }),
-      catchError(error => {
-        console.log(error);
-        _this.isAddedToUserGroupFailed = true;
-        _this.errorMessage2 = error;
-        return throwError(error);
-      })
-
-    ).subscribe(
-      {
-        next: response => {
-          _this.isAddedToUserGroupSuccessful = true;
-          _this.isAddedToUserGroupFailed = false;
-          return response;
-        }, error: err => {
-          console.log(err);
-          _this.isAddedToUserGroupFailed = true;
-          _this.errorMessage2 = _this.errorMessage2 + ' ... ' + err;
-        }
-      }
-    )
-
+    let response = this.http.post(apiServerUrl+'/memories/addtousergroup', addToUserGroupRequest, httpOptions).pipe(
+      map(x=>{clearLatestFolderIdPath(); return x})
+    );
+    return response;
   }
 
 }

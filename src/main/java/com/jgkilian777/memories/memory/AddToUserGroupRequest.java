@@ -1,7 +1,5 @@
 package com.jgkilian777.memories.memory;
 
-import java.time.Instant;
-
 public class AddToUserGroupRequest {
   private Long usergroupId;
   private Long memoryId;

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
+import {StorageService} from "../auth/storage.service";
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -14,19 +15,22 @@ export class RegisterComponent implements OnInit {
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
-  constructor(private authService: AuthService) { }
+  isLoggedIn = false;
+
+  constructor(private authService: AuthService, private storageService: StorageService) { }
   ngOnInit(): void {
+    if (this.storageService.isLoggedIn()) {
+      this.isLoggedIn = true;
+    }
   }
   onSubmit(): void {
     const { username, email, password } = this.form;
     this.authService.register(username, email, password).subscribe({
       next: data => {
-        console.log(data);
         this.isSuccessful = true;
         this.isSignUpFailed = false;
       },
       error: err => {
-        console.log(err);
         this.errorMessage = err.error.message;
         this.isSignUpFailed = true;
       }

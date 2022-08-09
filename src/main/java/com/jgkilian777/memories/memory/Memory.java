@@ -17,7 +17,6 @@ public class Memory {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
-//  @ManyToOne(mappedBy="memories", optional = false)
     private User user;
 
     @ManyToMany(mappedBy = "memories", fetch = FetchType.LAZY)
@@ -28,8 +27,6 @@ public class Memory {
     private String fileType;
 
     private Instant dateTimeAdded;
-
-//    private String fileUrl;
 
     @Lob
     private byte[] data;

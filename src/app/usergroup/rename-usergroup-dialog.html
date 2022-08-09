@@ -1,8 +1,8 @@
 
 <div mat-dialog-content>
-  <p>What's your favorite animal?</p>
+  <p>Rename Usergroup</p>
   <mat-form-field appearance="fill">
-    <mat-label>Favorite Animal</mat-label>
+    <mat-label>New name</mat-label>
     <input
       #newNameInp
       type="text"
@@ -16,5 +16,4 @@
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">No Thanks</button>
   <button mat-button [mat-dialog-close]="newNameInp.value">Ok</button>
-<!--  <button mat-button (click)="closeAndRenameUserGroup(newNameInp.value)">Ok</button>-->
 </div>

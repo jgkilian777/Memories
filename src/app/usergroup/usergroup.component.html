@@ -1,77 +1,42 @@
 <div *ngIf="isLoggedIn">
-
-<!--  {{selectedIndex}}-->
   <mat-tab-group dynamicHeight preserveContent (selectedTabChange)="myTabSelectedTabChange($event)" animationDuration="0" [(selectedIndex)]=selectedIndex>
-
     <mat-tab label="Short tab">
+      <div>
+        <div class="alert alert-warning" *ngIf="userGroupLoadFailed">
+          failed to get usergroup!<br />{{ errorMessage }}
+        </div>
+        <h2 id="userGroupName"> </h2>
+        <button [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)" id="saveJSONbutton"> SAVE JSON </button>
+        <button [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)" id="createFolderButton"> CREATE FOLDER </button>
+        <button [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)" id="renameUserGroupButton"> RENAME USERGROUP </button>
+        <button [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)" id="deleteUserGroupButton"> DELETE USERGROUP </button>
+        <button id="addMemoriesButton"> ADD MEMORIES </button>
+        <button id="createAndAddMemoriesButton"> CREATE AND ADD MEMORIES </button>
+        <button id="modifyMemoriesForUserGroupButton"> MODIFY MEMORIES </button>
 
+        <div draggable="false" class="backbox_dnd" id="backbox_dnd"> ... </div>
 
+        <div [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)">
+          Turn on to allow dragging files into folders to deposit:
+          <button id="toggleFolderDepositButton"> off </button>
+        </div>
 
+        <div class="fullcontainer_dnd">
 
-      <a (click)="debugButton()">usergroup works! debug button</a>
-<!--  <p>usergroup works!</p>-->
+          <div class="containerbehind_dnd" id="dirviewbehind_dnd">
+          </div>
 
-  <div>
-    <div class="alert alert-warning" *ngIf="userGroupLoadFailed">
-      failed to get usergroup!<br />{{ errorMessage }}
-    </div>
-    <h2 id="userGroupName"> </h2>
-    <button [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)" id="saveJSONbutton"> SAVE JSON </button>
-    <button [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)" id="createFolderButton"> CREATE FOLDER </button>
-    <button [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)" id="renameUserGroupButton"> RENAME USERGROUP </button>
-    <button [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)" id="deleteUserGroupButton"> DELETE USERGROUP </button>
-    <button id="addMemoriesButton"> ADD MEMORIES </button>
-    <button id="createAndAddMemoriesButton"> CREATE AND ADD MEMORIES </button>
-    <button id="modifyMemoriesForUserGroupButton"> MODIFY MEMORIES </button>
+          <div class="container_dnd" id="dirview_dnd">
+          </div>
 
-    <div draggable="false" class="backbox_dnd" id="backbox_dnd"> ... </div>
-
-    <div [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)">
-      Turn on to allow dragging files into folders to deposit:
-      <button id="toggleFolderDepositButton"> off </button>
-    </div>
-
-    <div class="fullcontainer_dnd">
-
-      <div class="containerbehind_dnd" id="dirviewbehind_dnd">
-        <!--    <div draggable="true" class="box">A</div>-->
-        <!--    <div draggable="true" class="box">B</div>-->
-        <!--    <div draggable="true" class="box">C</div>-->
-        <!--    <div draggable="true" class="box folder">Folder D</div>-->
+        </div>
       </div>
-
-      <div class="container_dnd" id="dirview_dnd">
-        <!--    <div draggable="true" class="box">A</div>-->
-        <!--    <div draggable="true" class="box">B</div>-->
-        <!--    <div draggable="true" class="box">C</div>-->
-        <!--    <div draggable="true" class="box folder">Folder D</div>-->
-<!--        <div draggable="true" style="z-index:2" class="subgrid_dnd box_dnd" id="0">3t34ggggggggg45</div>-->
-      </div>
-
-    </div>
-  </div>
-
-
 
 
   </mat-tab>
-  <mat-tab label="Long tab">
-<!--    <ng-template matTabContent>-->
-
+    <mat-tab label="Long tab">
       <app-user-group-users-tab [(requiredUserGroupId)]="requiredUserGroupId" [(usersInGroup)]="usersInGroup" [(pendingUsersInGroup)]="pendingUsersInGroup" [(selectedIndex)]="selectedIndex" [(userGroupAdminUsername)]="userGroupAdminUsername" (selectedIndexChange)="onIndexChange($event)" ></app-user-group-users-tab>
-
-
-
-
-
-
-
-
-
-
-
-<!--    </ng-template>-->
-  </mat-tab>
+    </mat-tab>
   </mat-tab-group>
 </div>
 

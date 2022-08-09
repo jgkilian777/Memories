@@ -1,20 +1,9 @@
 <div class="modal-header">
-  <h4 class="modal-title">Hi there!</h4>
   <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
 </div>
 
-
-
-
-
-
-
-
-
-
-
 <form
-  *ngIf="!isSuccessful"
+  *ngIf="!formSubmitted || (formSubmitted&&isUserInviteFailed)"
   name="form"
   (ngSubmit)="f.form.valid && onSubmit()"
   #f="ngForm"
@@ -50,38 +39,11 @@
     user invite failed!<br />{{ errorMessage }}
   </div>
 </form>
-<div class="alert alert-success" *ngIf="isSuccessful">
+<div class="alert alert-success" *ngIf="formSubmitted && !isUserInviteFailed">
   Invitation was successful!
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="modal-body">
-  <button type="button" class="btn" (click)="activeModal.close('Close click')">create usergroup</button>
-</div>
 <div class="modal-footer">
   <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
 </div>

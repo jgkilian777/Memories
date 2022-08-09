@@ -1,20 +1,10 @@
 <div class="modal-header">
-  <h4 class="modal-title">Hi there!</h4>
   <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
 </div>
 
 
-
-
-
-
-
-
-
-
-
 <form
-  *ngIf="!isSuccessful"
+  *ngIf="!formSubmitted || (formSubmitted&&isMemoryFailed)"
   name="form"
   (ngSubmit)="f.form.valid && onSubmit()"
   #f="ngForm"
@@ -42,12 +32,7 @@
       </div>
     </div>
 
-
-
-
-
-
-    <input type="file" class="file-input"
+    <input hidden type="file" class="file-input"
            [accept]="requiredFileType"
            (change)="onFileSelected($event)" #fileUpload>
 
@@ -55,7 +40,7 @@
 
       {{fileName || "No file uploaded yet."}}
 
-      <button mat-mini-fab color="primary" class="upload-btn"
+      <button mat-mini-fab color="primary" class="upload-btn" type="button"
               (click)="fileUpload.click()">
         <mat-icon>attach_file</mat-icon>
 
@@ -75,61 +60,21 @@
 
     </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   </div>
 
   <div class="form-group">
     <button class="btn btn-primary btn-block">create memory</button>
   </div>
+
   <div class="alert alert-warning" *ngIf="f.submitted && isMemoryFailed">
-    memoryname creation failed!<br />{{ errorMessage }}
+    memory creation failed!<br />{{ errorMessage }}
   </div>
 </form>
-<div class="alert alert-success" *ngIf="isSuccessful">
-  Your memoryname creation is successful!
+<div class="alert alert-success" *ngIf="formSubmitted && !isMemoryFailed">
+  Your memory creation was successful!
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="modal-body">
-  <button type="button" class="btn" (click)="activeModal.close('Close click')">create memory</button>
-</div>
 <div class="modal-footer">
   <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
 </div>

@@ -8,9 +8,7 @@
   <div *ngFor="let pendingusergroup of pendinguserGroups" class="pendinguserGroupItem">
 
     <h3>
-<!--      <a (click)="loadUserGroupFromUserGroups(usergroup.id)">-->
         pending: {{ pendingusergroup.name }}
-<!--      </a>-->
       <a (click)="acceptUserGroupInvite(pendingusergroup.id)">accept</a>
       <a (click)="declineUserGroupInvite(pendingusergroup.id)">decline</a>
     </h3>

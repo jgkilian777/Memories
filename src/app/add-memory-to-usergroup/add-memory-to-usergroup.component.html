@@ -1,6 +1,11 @@
 <div>
+  <div class="alert alert-warning" *ngIf="isGetMemoriesFailed">
+    failure, couldn't get memories!<br />{{ getMemoriesError }}
+  </div>
+</div>
+<div>
   <div class="alert alert-warning" *ngIf="isAddedToUserGroupFailed">
-   failure, couldnt add memory to usergroup!<br />{{ errorMessage2 }}
+   failure, couldn't add memory to usergroup!<br />{{ addedToUserGroupError }}
   </div>
 </div>
 <div class="memoryItemsList">

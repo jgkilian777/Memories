@@ -1,20 +1,9 @@
 <div class="modal-header">
-  <h4 class="modal-title">Hi there!</h4>
   <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
 </div>
 
-
-
-
-
-
-
-
-
-
-
   <form
-    *ngIf="!isSuccessful"
+    *ngIf="!isUserGroupCreationFailed"
     name="form"
     (ngSubmit)="f.form.valid && onSubmit()"
     #f="ngForm"
@@ -47,41 +36,13 @@
       <button class="btn btn-primary btn-block">create usergroup</button>
     </div>
     <div class="alert alert-warning" *ngIf="f.submitted && isUserGroupCreationFailed">
-      usergroupname creation failed!<br />{{ errorMessage }}
+      usergroup creation failed!<br />{{ errorMessage }}
     </div>
   </form>
-  <div class="alert alert-success" *ngIf="isSuccessful">
-    Your usergroupname creation is successful!
+  <div class="alert alert-success" *ngIf="formSubmitted && !isUserGroupCreationFailed">
+    Your usergroup creation is successful!
   </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="modal-body">
-  <button type="button" class="btn" (click)="activeModal.close('Close click')">create usergroup</button>
-</div>
 <div class="modal-footer">
   <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
 </div>

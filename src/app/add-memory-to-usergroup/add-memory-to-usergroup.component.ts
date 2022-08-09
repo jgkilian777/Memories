@@ -1,11 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MemoryItem} from "./memoryItem";
-import {UserGroup} from "../usergroups/userGroup";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MemoryService} from "./memory.service";
-import {UsergroupsService} from "../usergroups/usergroups.service";
 import {UserGroupService} from "../usergroup/user-group.service";
 import {StorageService} from "../auth/storage.service";
+import {catchError, mergeMap, throwError} from "rxjs";
 
 @Component({
   selector: 'app-add-memory-to-usergroup',
@@ -17,11 +16,11 @@ export class AddMemoryToUsergroupComponent implements OnInit {
   constructor(private memoryService: MemoryService, private usergroupService: UserGroupService, private storageService: StorageService) { }
 
   isAddedToUserGroupFailed = false;
-  errorMessage2="";
-  isAddedToUserGroupSuccessful = false;
+  getMemoriesError="";
+  isGetMemoriesFailed = false;
+  addedToUserGroupError="";
 
   public memories: MemoryItem[];
-  isLoggedIn = false;
   ngOnInit() {
     this.getMemories();
     this.currentUsername = this.storageService.getUser().username;
@@ -29,16 +28,16 @@ export class AddMemoryToUsergroupComponent implements OnInit {
   }
 
   @Input() public usergroupId: number;
-  // @Input() public usergroup: UserGroup;
 
   public getMemories(): void {
     this.memoryService.getMemories().subscribe({
       next: (response: MemoryItem[]) => {
         this.memories = response;
-        console.log(this.memories);
+        this.isGetMemoriesFailed=false;
       },
       error: (error: HttpErrorResponse) => {
-        alert(error.message);
+        this.getMemoriesError=error.message;
+        this.isGetMemoriesFailed=true;
       }
     });
 
@@ -46,7 +45,31 @@ export class AddMemoryToUsergroupComponent implements OnInit {
 
 
   addMemoryToUserGroup(memoryItem: MemoryItem){
-    this.memoryService.addMemoryToUsergroup(this.usergroupId, memoryItem.id, this, this.currentUsername);
+    const addMemoryToUserGroupObs$ = this.memoryService.addMemoryToUsergroup(this.usergroupId, memoryItem.id);
+
+    addMemoryToUserGroupObs$.pipe(
+
+      mergeMap(success => {
+        return this.usergroupService.loadUserGroupFull(this.usergroupId, this.currentUsername);
+      }),
+      catchError(error => {
+        this.isAddedToUserGroupFailed = true;
+        this.addedToUserGroupError = error;
+        return throwError(error);
+      })
+
+    ).subscribe(
+      {
+        next: response => {
+          this.isAddedToUserGroupFailed = false;
+        }, error: err => {
+          this.isAddedToUserGroupFailed = true;
+          this.addedToUserGroupError = err;
+        }
+      }
+    )
+
+
   }
 
 }

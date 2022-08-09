@@ -24,19 +24,6 @@ public class UserServiceImpl implements UserService{
 
   @Override
   public UserAndUserGroup principalCanAccessUserGroupId(Long usergroupId) {
-//    Authentication authentication = authenticationFacadeImpl.getAuthentication();
-//    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//    Optional<User> optionalUser = userRepository.findById(userDetails.getId());
-//    Optional<UserGroup> optionalUserGroup = userGroupRepository.findUserGroupById(usergroupId);
-//
-//    if (!optionalUser.isPresent() || !optionalUserGroup.isPresent()) {
-//      System.out.println(usergroupId);
-//      System.out.println(optionalUser.isPresent());
-//      System.out.println(optionalUserGroup.isPresent());
-//      throw new RuntimeException("somehow user or usergroup doesnt exist");
-//    }
-//    User userInstance = optionalUser.get();
-//    UserGroup userGroupInstance = optionalUserGroup.get();
     User userInstance = principalUserExists();
     UserGroup userGroupInstance = userGroupExists(usergroupId);
     if(userInstance.getUserGroups().contains(userGroupInstance)){
@@ -54,7 +41,6 @@ public class UserServiceImpl implements UserService{
       return false;
     }
   }
-
 
   @Override
   public User principalUserExists(){

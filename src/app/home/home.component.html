@@ -1,10 +1,10 @@
-<section class="userGroupsPanel">
+<section *ngIf="isLoggedIn" class="userGroupsPanel">
   <app-usergroups>
 
   </app-usergroups>
 </section>
 
-<section class="userGroupContent">
+<section *ngIf="isLoggedIn" class="userGroupContent">
   <app-usergroup>
 
   </app-usergroup>

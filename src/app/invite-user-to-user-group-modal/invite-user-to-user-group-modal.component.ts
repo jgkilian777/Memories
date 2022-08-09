@@ -1,8 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
-import {StorageService} from "../auth/storage.service";
 import {UserGroupService} from "../usergroup/user-group.service";
-import {catchError, switchMap, throwError} from "rxjs";
+import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-invite-user-to-user-group-modal',
@@ -14,16 +12,15 @@ export class InviteUserToUserGroupModalComponent implements OnInit {
   form: any = {
     username: null,
   };
-  isSuccessful = false;
   isUserInviteFailed = false;
   errorMessage = '';
 
+  formSubmitted=false;
+
   @Input() private usergroupId: number;
 
-  constructor(public activeModal: NgbActiveModal,  private storageService: StorageService, private usergroupService: UserGroupService) { }
+  constructor(private usergroupService: UserGroupService, public activeModal: NgbActiveModal) { }
 
-
-  // constructor(private authService: AuthService) { }
   ngOnInit(): void {
   }
   onSubmit(): void {
@@ -31,13 +28,11 @@ export class InviteUserToUserGroupModalComponent implements OnInit {
     this.usergroupService.inviteUserToUserGroup(username, this.usergroupId)
       .subscribe({
       next: data => {
-        console.log(data);
-        this.isSuccessful = true;
+        this.formSubmitted=true;
         this.isUserInviteFailed = false;
         this.usergroupService.setLoadUserGroupPendingUsers(true);
       },
       error: err => {
-        console.log(err);
         this.errorMessage = err.error.message;
         this.isUserInviteFailed = true;
       }

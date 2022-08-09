@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpEventType} from "@angular/common/http";
-import {Subscription} from "rxjs";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpEventType} from "@angular/common/http";
+import {catchError, filter, mergeMap, Subscription, throwError} from "rxjs";
 import {finalize} from "rxjs/operators";
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {StorageService} from "../auth/storage.service";
-import {UserGroupService} from "../usergroup/user-group.service";
-import {CreateMemoryService} from "./create-memory.service";
+import {MemoryItem} from "../add-memory-to-usergroup/memoryItem";
+import {MemoryService} from "../add-memory-to-usergroup/memory.service";
+
 
 const apiServerUrl = 'http://localhost:8080/api';
 
@@ -18,18 +19,23 @@ export class CreateMemoryModalComponent implements OnInit {
   form: any = {
     memoryname: null,
   };
-  isSuccessful = false;
+
   isMemoryFailed = false;
   errorMessage = '';
 
-  constructor(private http: HttpClient, public activeModal: NgbActiveModal,  private storageService: StorageService, private memoryService: CreateMemoryService) {}
+  formSubmitted=false;
+
+  requiredFileType = ".jpeg, .jpg, .png, .mp4, .webm, .gif";
+
+  @Input() memories: MemoryItem[];
+
+  @Output() memoriesChange = new EventEmitter<MemoryItem[]>();
+
+  constructor(private http: HttpClient, public activeModal: NgbActiveModal,  private storageService: StorageService, private memoryService: MemoryService) {}
 
   ngOnInit(): void {
   }
 
-
-  // @Input()
-  requiredFileType:string;
 
   fileName = '';
   uploadProgress:number | null;
@@ -40,25 +46,6 @@ export class CreateMemoryModalComponent implements OnInit {
   onFileSelected(event: any) {
     this.file = event.target.files[0];
 
-    // if (this.file!=null) {
-    //   this.fileName = this.file.name;
-    //   const formData = new FormData();
-    //   formData.append("thumbnail", this.file);
-    //
-    //   const upload$ = this.http.post("/api/thumbnail-upload", formData, {
-    //     reportProgress: true,
-    //     observe: 'events'
-    //   })
-    //     .pipe(
-    //       finalize(() => this.reset())
-    //     );
-    //
-    //   this.uploadSub = upload$.subscribe(event => {
-    //     if (event.type == HttpEventType.UploadProgress) {
-    //       this.uploadProgress = Math.round(100 * (event.loaded / event.total));
-    //     }
-    //   })
-    // }
   }
 
   cancelUpload() {
@@ -74,13 +61,8 @@ export class CreateMemoryModalComponent implements OnInit {
   }
 
 
-
-
   onSubmit(): void {
     const { memoryname } = this.form;
-    // const adminUsername = this.storageService.getUser().username;
-
-
 
     if (this.file!=null) {
       this.fileName = this.file.name;
@@ -96,51 +78,41 @@ export class CreateMemoryModalComponent implements OnInit {
           finalize(() => this.reset())
         );
 
+      this.uploadSub = upload$.pipe(
 
-      this.uploadSub = upload$.subscribe({
-        next: data => {
-
-          if (data.type == HttpEventType.UploadProgress && data.total) {
-            this.uploadProgress = Math.round(100 * (data.loaded / data.total));
-          } else if (data.type == HttpEventType.Response) {
-            console.log(data);
-            this.isSuccessful = true;
-            this.isMemoryFailed = false;
+        filter(response => {
+          if (response.type == HttpEventType.UploadProgress && response.total!==undefined){
+            this.uploadProgress = Math.round(100 * (response.loaded / response.total));
+            return false;
+          } else if (response.type == HttpEventType.Response && response.body!==null) {
+            return true;
+          } else {
+            return false;
           }
+        }),
 
+        mergeMap(success => {
+          return this.memoryService.getMemories();
+        }),
+        catchError(error => {
+          return throwError(error);
+        })
 
+      ).subscribe({
+        next: response => {
+          this.isMemoryFailed = false;
+          this.formSubmitted=true;
+          this.memories=response;
+          this.memoriesChange.emit(this.memories);
         },
         error: err => {
-          console.log(err);
           this.errorMessage = err.error.message;
           this.isMemoryFailed = true;
         }
-      });
+      })
+
     }
 
-
-
-
-
-
-
-
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

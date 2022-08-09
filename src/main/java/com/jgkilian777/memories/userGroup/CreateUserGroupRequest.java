@@ -1,6 +1,5 @@
 package com.jgkilian777.memories.userGroup;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -29,6 +28,5 @@ public class CreateUserGroupRequest {
   public void setUsergroupName(String usergroupName) {
     this.usergroupName = usergroupName;
   }
-
 
 }

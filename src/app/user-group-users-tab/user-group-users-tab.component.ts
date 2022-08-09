@@ -1,7 +1,5 @@
 import {
-  AfterContentInit,
   AfterViewInit,
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -14,7 +12,6 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {PendingUserInGroupView} from "../usergroup/pendingUserInGroupView";
 import {StorageService} from "../auth/storage.service";
 import {UserGroupService} from "../usergroup/user-group.service";
-import {UsergroupsService} from "../usergroups/usergroups.service";
 
 @Component({
   selector: 'app-user-group-users-tab',
@@ -38,7 +35,7 @@ export class UserGroupUsersTabComponent implements OnInit, AfterViewInit {
   @Output() selectedIndexChange = new EventEmitter<number>();
   @Output() userGroupAdminUsernameChange = new EventEmitter<string>();
 
-  constructor(private storageService: StorageService, private userGroupService: UserGroupService, private userGroupsService: UsergroupsService, private changeDetectorRef: ChangeDetectorRef) { }
+  constructor(private storageService: StorageService, private userGroupService: UserGroupService) { }
 
   isLoggedIn: boolean;
   currentUsername: string;
@@ -54,13 +51,10 @@ export class UserGroupUsersTabComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit () {
     this.selectedIndexChange.emit(this.selectedIndex-1);
-
   }
 
   ngOnDestroy(): void {
-    // this.loadUserGroupFullObservable$.unsubscribe();
     this.loadUserGroupPendingUsersObservable$.unsubscribe();
-    this.loadUserGroupUsersObservable$.unsubscribe();
   }
 
 
@@ -71,10 +65,8 @@ export class UserGroupUsersTabComponent implements OnInit, AfterViewInit {
         }
         return this.userGroupService.getPendingUserGroupUsers(this.requiredUserGroupId);
       }
-
     ),
     catchError(error => {
-      console.log(error);
       return throwError(error);
     })
 
@@ -83,34 +75,6 @@ export class UserGroupUsersTabComponent implements OnInit, AfterViewInit {
       next: (response: PendingUserInGroupView[]) => {
         this.pendingUsersInGroup = response;
         this.pendingUsersInGroupChange.emit(this.pendingUsersInGroup);
-        console.log(this.pendingUsersInGroup);
-      },
-      error: (error: HttpErrorResponse) => {
-        alert(error.message);
-      }
-    }
-  );
-
-  loadUserGroupUsersObservable$ = this.userGroupService.getLoadUserGroupUsers().pipe(
-    switchMap(success => {
-        if (this.requiredUserGroupId===null){
-          throw throwError(() => new Error('required usergroupId is null somehow'));
-        }
-        return this.userGroupService.getUserGroupUsers(this.requiredUserGroupId);
-      }
-
-    ),
-    catchError(error => {
-      console.log(error);
-      return throwError(error);
-    })
-
-  ).subscribe(
-    {
-      next: (response: UserInGroupView[]) => {
-        this.usersInGroup = response;
-        this.usersInGroupChange.emit(this.usersInGroup);
-        console.log(this.usersInGroup);
       },
       error: (error: HttpErrorResponse) => {
         alert(error.message);
@@ -131,7 +95,6 @@ export class UserGroupUsersTabComponent implements OnInit, AfterViewInit {
           }
         ),
         catchError(error => {
-          console.log(error);
           this.userGroupUserActionFailed=true;
           this.userGroupUserActionErrorMessage=error;
           return throwError(error);
@@ -146,7 +109,6 @@ export class UserGroupUsersTabComponent implements OnInit, AfterViewInit {
           error: (err) => {
             this.userGroupUserActionFailed=true;
             this.userGroupUserActionErrorMessage=err;
-            console.log(err);
           }
         })
     }
@@ -165,9 +127,6 @@ export class UserGroupUsersTabComponent implements OnInit, AfterViewInit {
           }
         ),
         catchError(error => {
-          console.log(error);
-          this.userGroupUserActionFailed=true;
-          this.userGroupUserActionErrorMessage=error;
           return throwError(error);
         }))
         .subscribe({
@@ -175,16 +134,12 @@ export class UserGroupUsersTabComponent implements OnInit, AfterViewInit {
             this.userGroupUserActionFailed=false;
             this.usersInGroup = usersInUserGroup;
             this.usersInGroupChange.emit(this.usersInGroup);
-
           },
           error: (err) => {
             this.userGroupUserActionFailed=true;
             this.userGroupUserActionErrorMessage=err;
-            console.log(err);
           }
         })
     }
   }
-
-
 }

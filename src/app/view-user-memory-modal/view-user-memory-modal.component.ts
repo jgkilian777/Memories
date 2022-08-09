@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
@@ -27,16 +26,12 @@ export class ViewUserMemoryModalComponent implements OnInit {
 
   @ViewChild('mediaContainer') mediaContainer: ElementRef;
 
-  constructor(public activeModal: NgbActiveModal, private el: ElementRef, private renderer:Renderer2, private changeDetectorRef: ChangeDetectorRef, private http: HttpClient) { }
+  constructor(public activeModal: NgbActiveModal, private renderer:Renderer2, private http: HttpClient) { }
 
   ngOnInit(): void {
-
   }
 
   ngAfterViewInit () {
-    console.log("TESTING TESTING TESTING --------------------------");
-    console.log(typeof this.fileId);
-    // console.log(typeof this.usergroupId);
     if (!(typeof this.fileId === 'undefined' || this.fileId === null || this.alreadyInitialised===true)){
       this.initMediaView();
       this.alreadyInitialised=true;
@@ -44,10 +39,8 @@ export class ViewUserMemoryModalComponent implements OnInit {
   }
 
 
-
   ngOnChanges(changes: SimpleChanges): void {
     if (!(typeof this.fileId === 'undefined' || this.fileId === null || this.alreadyInitialised===true)){
-
       this.initMediaView();
       this.alreadyInitialised=true;
     }
@@ -64,7 +57,6 @@ export class ViewUserMemoryModalComponent implements OnInit {
     "image/gif",
     "image/jpeg",
     "image/png",
-
   ])
 
 
@@ -80,12 +72,9 @@ export class ViewUserMemoryModalComponent implements OnInit {
       },
       error: (err) => {
         this.loadMediaTypeFailed = true;
-        this.errorMessage = err;
-        console.log(err);
+        this.errorMessage = err.message;
       }
     });
-
-
   }
 
   initVideoView(){
@@ -99,27 +88,14 @@ export class ViewUserMemoryModalComponent implements OnInit {
     vidEle.height = 240;
     vidEle.width = 320;
 
-
-    console.log(this.renderer);
-    console.log(this.mediaContainer);
-
     this.renderer.appendChild(this.mediaContainer.nativeElement, vidEle);
-
-
-    console.log("SHOULD BE DONE?");
   }
 
   initImageView(){
     const imgEle = this.renderer.createElement('img');
 
     imgEle.src = 'http://localhost:8080/api/memories/userfile/'+String(this.fileId);
-
-    console.log(this.mediaContainer);
-
     this.renderer.appendChild(this.mediaContainer.nativeElement, imgEle);
-
-
   }
-
 
 }

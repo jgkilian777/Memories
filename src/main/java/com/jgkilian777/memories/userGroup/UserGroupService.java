@@ -17,7 +17,6 @@ public interface UserGroupService {
 
   public abstract boolean saveDirTree(Long userGroupId, JSONObject dirTreeJSON);
   public abstract boolean saveDirTree(Long userGroupId);
-//  public abstract void verifyAndUpdateDirTree(JSONObject dirTreeJSON);
   public abstract boolean verifyAndUpdateDirTree(JSONObject dirTreeJSON, UserGroup usergroup);
   public abstract boolean refreshDirTreeTransactional(Long userGroupId);
   public abstract ResponseEntity<?> inviteUserToUserGroup(InviteUserToUserGroupRequest inviteUserToUserGroupRequest);
@@ -27,5 +26,4 @@ public interface UserGroupService {
   public abstract ResponseEntity<?> userDeclineUserGroupInvite(Long usergroupId);
   public abstract void renameUserGroup(Long userGroupId, String newName);
   public abstract void deleteUserGroup(Long userGroupId);
-  public abstract void deleteUserGroupTransactional(UserGroup userGroup);
 }

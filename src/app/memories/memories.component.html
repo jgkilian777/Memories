@@ -1,19 +1,24 @@
-<div>
-  <div class="alert alert-warning" *ngIf="modifyMemoryFailed">
-    failure, couldnt modify memory!<br />{{ errorMessage }}
+<div *ngIf="isLoggedIn">
+  <div>
+    <div class="alert alert-warning" *ngIf="getMemoriesFailed">
+      failure, couldn't get memories!<br />{{ getMemoriesError }}
+    </div>
   </div>
-</div>
+  <div>
+    <div class="alert alert-warning" *ngIf="modifyMemoryFailed">
+      failure, couldn't modify memory!<br />{{ errorMessage }}
+    </div>
+  </div>
+  <button (click)="openCreateMemoryModal()">create memory</button>
+  <div class="memoryItemsList">
+    <div *ngFor="let memoryItem of memories" class="memoryItem">
 
-<div class="memoryItemsList">
-  <div *ngFor="let memoryItem of memories" class="memoryItem">
+      <h3>
+          <a (click)="viewMemory(memoryItem.id)">{{ memoryItem.name }} {{memoryItem.fileType}} {{memoryItem.dateTimeAdded}} </a>
+        <button (click)="deleteMemory(memoryItem.id)">delete</button>
+        <button (click)="openRenameMemoryModal(memoryItem.id)">rename</button>
+      </h3>
 
-    <h3>
-<!--      <a (click)="addMemoryToUserGroup(memoryItem)">-->
-
-        <a (click)="viewMemory(memoryItem.id)">{{ memoryItem.name }} {{memoryItem.fileType}} {{memoryItem.dateTimeAdded}} </a>
-      <button (click)="deleteMemory(memoryItem.id)">delete</button>
-      <button (click)="openRenameMemoryModal(memoryItem.id)">rename</button>
-    </h3>
-
+    </div>
   </div>
 </div>

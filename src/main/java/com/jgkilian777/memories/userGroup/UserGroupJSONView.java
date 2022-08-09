@@ -4,9 +4,6 @@ public class UserGroupJSONView {
   private Long id;
   private String name;
   private String directoryTreeJSON;
-//  Integer getId();
-//  String getName();
-//  String getDirectoryTreeJSON();
   private String adminUsername;
 
   public UserGroupJSONView(Long id, String name, String directoryTreeJSON){
