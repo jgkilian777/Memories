@@ -19,20 +19,28 @@ import java.util.*;
 @Service
 public class UserGroupServiceImpl implements UserGroupService{
 
-  @Autowired
-  UserRepository userRepository;
 
-  @Autowired
-  UserGroupRepository userGroupRepository;
+  private final UserRepository userRepository;
 
-  @Autowired
-  UserServiceImpl userServiceImpl;
 
-  @Autowired
-  private AuthUtils authUtils;
+  private final UserGroupRepository userGroupRepository;
 
-  @Autowired
-  MemoryRepository memoryRepository;
+
+  private final UserServiceImpl userServiceImpl;
+
+
+  private final  AuthUtils authUtils;
+
+
+  private final  MemoryRepository memoryRepository;
+
+  public UserGroupServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, UserServiceImpl userServiceImpl, AuthUtils authUtils, MemoryRepository memoryRepository){
+    this.userGroupRepository=userGroupRepository;
+    this.userRepository=userRepository;
+    this.userServiceImpl=userServiceImpl;
+    this.authUtils=authUtils;
+    this.memoryRepository=memoryRepository;
+  }
 
   @Override
   public List<UserGroupMinView> getUserGroupsMinView(User user) {

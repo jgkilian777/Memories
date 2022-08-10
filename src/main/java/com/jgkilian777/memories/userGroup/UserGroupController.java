@@ -18,14 +18,20 @@ import java.util.*;
 @RequestMapping("/api/usergroups")
 public class UserGroupController {
 
-  @Autowired
-  UserGroupServiceImpl userGroupService;
 
-  @Autowired
-  UserRepository userRepository;
+  private final UserGroupServiceImpl userGroupService;
 
-  @Autowired
-  UserGroupRepository userGroupRepository;
+
+  private final UserRepository userRepository;
+
+
+  private final UserGroupRepository userGroupRepository;
+
+  public UserGroupController(UserGroupServiceImpl userGroupService, UserRepository userRepository, UserGroupRepository userGroupRepository){
+    this.userGroupService=userGroupService;
+    this.userRepository=userRepository;
+    this.userGroupRepository=userGroupRepository;
+  }
 
 
   @GetMapping()

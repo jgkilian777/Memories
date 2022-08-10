@@ -18,12 +18,19 @@ import java.util.*;
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @RestController
 public class MemoryController {
-    @Autowired
-    MemoryServiceImpl memoryService;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    UserGroupServiceImpl userGroupService;
+
+    private final MemoryServiceImpl memoryService;
+
+    private final UserRepository userRepository;
+
+    private final UserGroupServiceImpl userGroupService;
+
+
+    public MemoryController(MemoryServiceImpl memoryService, UserRepository userRepository, UserGroupServiceImpl userGroupService){
+      this.memoryService=memoryService;
+      this.userGroupService=userGroupService;
+      this.userRepository=userRepository;
+    }
 
   @GetMapping("/api/memories/{userGroupId}/{memoryId}")
   public ResponseEntity<byte[]> getMemoryInUserGroup(@PathVariable("userGroupId") Long userGroupId, @PathVariable("memoryId") Long memoryId){

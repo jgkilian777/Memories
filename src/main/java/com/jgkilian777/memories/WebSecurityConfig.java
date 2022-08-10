@@ -3,7 +3,6 @@ package com.jgkilian777.memories;
 
 import com.jgkilian777.memories.security.AuthEntryPointJwt;
 import com.jgkilian777.memories.security.AuthTokenFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,17 +24,15 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class WebSecurityConfig {
 
 
-  private AuthEntryPointJwt unauthorizedHandler;
+  private final AuthEntryPointJwt unauthorizedHandler;
 
-  @Autowired
-  public void setUnauthorizedHandler(AuthEntryPointJwt unauthorizedHandler) {
-    this.unauthorizedHandler = unauthorizedHandler;
+  private final AuthTokenFilter authenticationJwtTokenFilter;
+
+  public WebSecurityConfig(AuthEntryPointJwt unauthorizedHandler, AuthTokenFilter authenticationJwtTokenFilter){
+    this.unauthorizedHandler=unauthorizedHandler;
+    this.authenticationJwtTokenFilter=authenticationJwtTokenFilter;
   }
 
-  @Bean
-  public AuthTokenFilter authenticationJwtTokenFilter() {
-    return new AuthTokenFilter();
-  }
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -57,8 +54,6 @@ public class WebSecurityConfig {
         .authorizeRequests(authorizeRequests ->
                   authorizeRequests
                       .antMatchers("/api/auth/**").permitAll()
-//                      .antMatchers("/api/test/**").permitAll()
-//                      .antMatchers("/api/memories/**").permitAll()
                       .anyRequest().authenticated()
               )
 
@@ -66,7 +61,7 @@ public class WebSecurityConfig {
               .logout(logout ->
                 logout.permitAll()
                );
-    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    http.addFilterBefore(authenticationJwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
       return http.build();
   }
 }

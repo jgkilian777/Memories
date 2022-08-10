@@ -352,7 +352,7 @@ function loadTreeNode() {
 
 function initUserGroupView(responseJSON, userGroupName, userCanDragInp, openFileFromAngularFunc, usergroupIdInp) {
   let contentHeader = document.getElementById('userGroupName');
-  contentHeader.innerHTML = userGroupName
+  contentHeader.textContent = userGroupName
   dirTreeJSON = responseJSON;
   toggleFolderDepositButton = document.getElementById('toggleFolderDepositButton');
 

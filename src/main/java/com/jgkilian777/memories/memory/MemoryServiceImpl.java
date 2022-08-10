@@ -1,15 +1,12 @@
 package com.jgkilian777.memories.memory;
 
 import com.jgkilian777.memories.security.AuthUtils;
-import com.jgkilian777.memories.security.AuthenticationFacadeImpl;
 import com.jgkilian777.memories.user.User;
-import com.jgkilian777.memories.user.UserRepository;
 import com.jgkilian777.memories.user.UserServiceImpl;
 import com.jgkilian777.memories.userGroup.UserAndUserGroup;
 import com.jgkilian777.memories.userGroup.UserGroup;
 import com.jgkilian777.memories.userGroup.UserGroupRepository;
 import com.jgkilian777.memories.userGroup.UserGroupServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,23 +16,26 @@ import java.util.*;
 @Service
 public class MemoryServiceImpl implements MemoryService {
 
-    @Autowired
-    MemoryRepository memoryRepository;
+private final MemoryRepository memoryRepository;
 
-  @Autowired
-  UserServiceImpl userServiceImpl;
+private final UserServiceImpl userServiceImpl;
 
-    @Autowired
-    private AuthUtils authUtils;
+    private final AuthUtils authUtils;
 
-    @Autowired
-    private UserGroupRepository userGroupRepository;
+    private final UserGroupRepository userGroupRepository;
 
-    @Autowired
-    private ValidMimeTypes validMimeTypes;
+    private final ValidMimeTypes validMimeTypes;
 
-  @Autowired
-  UserGroupServiceImpl userGroupService;
+private final UserGroupServiceImpl userGroupService;
+
+  public MemoryServiceImpl(MemoryRepository memoryRepository, UserServiceImpl userServiceImpl, AuthUtils authUtils, UserGroupRepository userGroupRepository, ValidMimeTypes validMimeTypes, UserGroupServiceImpl userGroupService){
+    this.memoryRepository = memoryRepository;
+    this.userServiceImpl = userServiceImpl;
+    this.authUtils = authUtils;
+    this.userGroupRepository = userGroupRepository;
+    this.validMimeTypes = validMimeTypes;
+    this.userGroupService = userGroupService;
+  }
 
 
     @Override

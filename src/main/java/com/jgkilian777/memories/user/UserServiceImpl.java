@@ -13,14 +13,20 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService{
 
-  @Autowired
-  UserRepository userRepository;
 
-  @Autowired
-  UserGroupRepository userGroupRepository;
+  private final UserRepository userRepository;
 
-  @Autowired
-  private AuthenticationFacadeImpl authenticationFacadeImpl;
+
+  private final UserGroupRepository userGroupRepository;
+
+
+  private final AuthenticationFacadeImpl authenticationFacadeImpl;
+
+  public UserServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, AuthenticationFacadeImpl authenticationFacadeImpl){
+    this.userGroupRepository=userGroupRepository;
+    this.userRepository=userRepository;
+    this.authenticationFacadeImpl=authenticationFacadeImpl;
+  }
 
   @Override
   public UserAndUserGroup principalCanAccessUserGroupId(Long usergroupId) {
