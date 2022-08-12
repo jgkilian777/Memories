@@ -9,6 +9,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ViewUserMemoryModalComponent} from "../view-user-memory-modal/view-user-memory-modal.component";
 import {CreateMemoryModalComponent} from "../create-memory-modal/create-memory-modal.component";
 import {StorageService} from "../auth/storage.service";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-memories',
@@ -23,6 +24,7 @@ export class MemoriesComponent implements OnInit {
   getMemoriesFailed=false;
   getMemoriesError="";
   isLoggedIn = false;
+  datePipe = new DatePipe('en-US');
 
   public memories: MemoryItem[];
   ngOnInit() {
@@ -45,6 +47,10 @@ export class MemoriesComponent implements OnInit {
       }
     });
 
+  }
+
+  formatDate(dateTime: number){
+    return this.datePipe.transform(dateTime, 'd MMM, y, h:mm:ss a');
   }
 
   openCreateMemoryModal() {

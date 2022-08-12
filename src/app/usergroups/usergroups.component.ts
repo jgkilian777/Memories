@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, QueryList, Renderer2, ViewChildren} from '@angular/core';
 import {UserGroup} from "./userGroup";
 import {HttpErrorResponse} from "@angular/common/http";
 import {UserGroupService} from "../usergroup/user-group.service";
@@ -18,7 +18,9 @@ export class UsergroupsComponent implements OnInit {
   userGroupActionFailed=false;
   errorMessage="";
 
-  constructor(private userGroupService: UserGroupService, private storageService: StorageService, private modalService: NgbModal, private usergroupsService: UsergroupsService) { }
+  @ViewChildren("usergroupDiv") userGroupItemDomElements: QueryList<ElementRef>;
+
+  constructor(private userGroupService: UserGroupService, private storageService: StorageService, private modalService: NgbModal, private usergroupsService: UsergroupsService, public elementRef: ElementRef, private renderer: Renderer2) { }
 
   public userGroups: UserGroup[];
   public pendinguserGroups: UserGroup[];
@@ -128,7 +130,13 @@ export class UsergroupsComponent implements OnInit {
   }
 
 
-  public loadUserGroupFromUserGroups(usergroupId: number): void{
+  public loadUserGroupFromUserGroups(usergroupId: number, usergroupDiv: HTMLElement): void{
+    this.userGroupItemDomElements.forEach(
+      eleRef => {
+        this.renderer.setStyle(eleRef.nativeElement, 'background', 'white');
+      }
+    );
+    this.renderer.setStyle(usergroupDiv, 'background', 'Gainsboro')
     this.userGroupService.setLoadUserGroupId(usergroupId);
   }
 

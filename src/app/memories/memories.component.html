@@ -14,7 +14,7 @@
     <div *ngFor="let memoryItem of memories" class="memoryItem">
 
       <h3>
-          <a (click)="viewMemory(memoryItem.id)">{{ memoryItem.name }} {{memoryItem.fileType}} {{memoryItem.dateTimeAdded}} </a>
+          <a (click)="viewMemory(memoryItem.id)" class="btn btn-light memoryanchor" >{{ memoryItem.name }} {{memoryItem.fileType}} {{formatDate(memoryItem.dateTimeAdded)}} </a>
         <button (click)="deleteMemory(memoryItem.id)">delete</button>
         <button (click)="openRenameMemoryModal(memoryItem.id)">rename</button>
       </h3>

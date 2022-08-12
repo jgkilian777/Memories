@@ -7,6 +7,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {catchError, filter, mergeMap, switchMap, throwError} from "rxjs";
 import {clearLatestFolderIdPath} from "../../main/resources/static/drag-and-drop";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {DatePipe} from "@angular/common";
 
 
 @Component({
@@ -24,6 +25,7 @@ export class ModifyMemoriesInUsergroupComponent implements OnInit, OnChanges, Af
   renameModalMemoryId: number;
   loadUserGroupUserMemoriesFailed = false;
   loadUserGroupUserMemoriesErrorMessage = "";
+  datePipe = new DatePipe('en-US');
 
   @Input() private usergroupId: number;
 
@@ -49,6 +51,9 @@ export class ModifyMemoriesInUsergroupComponent implements OnInit, OnChanges, Af
     }
   }
 
+  formatDate(dateTime: number){
+    return this.datePipe.transform(dateTime, 'd MMM, y, h:mm:ss a');
+  }
 
   public getUserMemoriesInUserGroup(): void {
     this.memoryService.getUserMemoriesInUserGroup(this.usergroupId).subscribe({

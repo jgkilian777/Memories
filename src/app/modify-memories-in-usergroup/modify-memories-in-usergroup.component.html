@@ -11,9 +11,9 @@
 <div class="memoryItemsList">
   <div *ngFor="let memoryItem of memories" class="memoryItem">
 
-    <h3>
-        {{ memoryItem.name }} {{memoryItem.fileType}} {{memoryItem.dateTimeAdded}}
-    </h3>
+    <h4>
+        {{ memoryItem.name }} {{memoryItem.fileType}} {{formatDate(memoryItem.dateTimeAdded)}}
+    </h4>
     <button (click)="deleteMemory(memoryItem.id)">delete</button>
     <button (click)="openRenameMemoryModal(memoryItem.id)">rename</button>
     <button (click)="removeMemoryFromGroup(memoryItem.id)">remove from this group</button>

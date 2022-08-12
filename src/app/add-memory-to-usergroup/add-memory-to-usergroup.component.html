@@ -10,12 +10,10 @@
 </div>
 <div class="memoryItemsList">
   <div *ngFor="let memoryItem of memories" class="memoryItem">
-
-    <h3>
-      <a (click)="addMemoryToUserGroup(memoryItem)">
-        {{ memoryItem.name }} {{memoryItem.fileType}} {{memoryItem.dateTimeAdded}}
+<h3>
+      <a (click)="addMemoryToUserGroup(memoryItem)" class="btn btn-light addmemoryanchor">
+        {{ memoryItem.name }} {{memoryItem.fileType}} {{formatDate(memoryItem.dateTimeAdded)}}
       </a>
     </h3>
-
   </div>
 </div>

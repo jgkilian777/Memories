@@ -341,7 +341,7 @@ export class UserGroupService {
   }
 
   private openModifyMemoriesForUserGroupModal(e: any): void {
-    const modalRef = this.modalService.open(ModifyMemoriesInUsergroupComponent);
+    const modalRef = this.modalService.open(ModifyMemoriesInUsergroupComponent, {modalDialogClass:"widerModals"});
     modalRef.componentInstance.usergroupId = Number(e.target.getAttribute("data-usergroupId"));
   }
 
@@ -388,7 +388,7 @@ export class UserGroupService {
   }
 
   private openAddMemoriesModal(e: any): void {
-    const modalRef = this.modalService.open(AddMemoryToUsergroupComponent);
+    const modalRef = this.modalService.open(AddMemoryToUsergroupComponent, {modalDialogClass:"widerModals"});
     modalRef.componentInstance.usergroupId = Number(e.target.getAttribute("data-usergroupId"));
   }
 

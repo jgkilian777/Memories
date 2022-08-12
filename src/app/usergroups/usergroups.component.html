@@ -15,13 +15,11 @@
 
   </div>
 
-  <div *ngFor="let usergroup of userGroups" class="userGroupItem">
+  <div *ngFor="let usergroup of userGroups" #usergroupDiv class="userGroupItem">
 
-    <h3>
-      <a (click)="loadUserGroupFromUserGroups(usergroup.id)">
+      <a (click)="loadUserGroupFromUserGroups(usergroup.id, usergroupDiv)" class="btn btn-light usergroupnameanchor">
         {{ usergroup.name }}
       </a>
-    </h3>
 
   </div>
 </div>

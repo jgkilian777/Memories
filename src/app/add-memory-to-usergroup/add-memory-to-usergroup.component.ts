@@ -5,6 +5,7 @@ import {MemoryService} from "./memory.service";
 import {UserGroupService} from "../usergroup/user-group.service";
 import {StorageService} from "../auth/storage.service";
 import {catchError, mergeMap, throwError} from "rxjs";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-add-memory-to-usergroup',
@@ -19,6 +20,7 @@ export class AddMemoryToUsergroupComponent implements OnInit {
   getMemoriesError="";
   isGetMemoriesFailed = false;
   addedToUserGroupError="";
+  datePipe = new DatePipe('en-US');
 
   public memories: MemoryItem[];
   ngOnInit() {
@@ -43,6 +45,9 @@ export class AddMemoryToUsergroupComponent implements OnInit {
 
   }
 
+  formatDate(dateTime: number){
+    return this.datePipe.transform(dateTime, 'd MMM, y, h:mm:ss a');
+  }
 
   addMemoryToUserGroup(memoryItem: MemoryItem){
     const addMemoryToUserGroupObs$ = this.memoryService.addMemoryToUsergroup(this.usergroupId, memoryItem.id);

@@ -12,3 +12,21 @@
 .cdk-overlay-container {
   z-index: 1600;
 }
+
+.memoryanchor {
+  float: left;
+}
+
+.addmemoryanchor {
+  float: left;
+  width: 100%;
+}
+
+.usergroupnameanchor {
+  width: 100%;
+}
+
+.widerModals {
+  --bs-modal-width: 700px;
+}
+
