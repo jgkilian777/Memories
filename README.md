@@ -16,3 +16,4 @@ run MemoriesApplication to start backend
 
 "ng serve" in terminal to start angular frontend
 
+go to localhost:4200 in a browser
