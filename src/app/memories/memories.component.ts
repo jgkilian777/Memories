@@ -65,7 +65,7 @@ export class MemoriesComponent implements OnInit {
 
 
   viewMemory(memoryId: number){
-    const modalRef = this.modalService.open(ViewUserMemoryModalComponent);
+    const modalRef = this.modalService.open(ViewUserMemoryModalComponent, {modalDialogClass:"widerModals"});
     modalRef.componentInstance.fileId = memoryId;
   }
 

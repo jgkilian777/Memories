@@ -9,4 +9,8 @@ public class RenameMemoryRequest {
     return this.memoryId;
   }
   public String getNewName(){return this.newName;}
+
+  public void setMemoryId(Long memoryId){this.memoryId = memoryId;}
+  public void setNewName(String newName){this.newName = newName;}
+
 }

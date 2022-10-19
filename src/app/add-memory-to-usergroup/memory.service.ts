@@ -39,7 +39,7 @@ export class MemoryService {
 
   public openFileFromAngular(nodeItem: any, usergroupId: number){
     let fileId = nodeItem.fileId;
-    const modalRef = this.modalService.open(ViewMemoryModalComponent);
+    const modalRef = this.modalService.open(ViewMemoryModalComponent, {modalDialogClass:"widerModals"});
     modalRef.componentInstance.usergroupId = usergroupId;
     modalRef.componentInstance.fileId = fileId;
   }

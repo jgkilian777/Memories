@@ -25,7 +25,7 @@ export class CreateMemoryModalComponent implements OnInit {
 
   formSubmitted=false;
 
-  requiredFileType = ".jpeg, .jpg, .png, .mp4, .webm, .gif";
+  requiredFileType = ".jpeg, .jpg, .png, .mp4, .webm, .gif, .mkv";
 
   @Input() memories: MemoryItem[];
 

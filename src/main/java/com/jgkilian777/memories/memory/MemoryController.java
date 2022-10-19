@@ -75,18 +75,18 @@ public class MemoryController {
 
 
     @PostMapping("/api/memories/creatememory")
-    public ResponseEntity<HashMap> createMemory(@RequestParam("userFile") MultipartFile file, @RequestParam("memoryName") String memoryName) {
+    public ResponseEntity<HashMap<String, Object>> createMemory(@RequestParam("userFile") MultipartFile file, @RequestParam("memoryName") String memoryName) {
       String message = "";
       try {
         Memory memory = memoryService.createMemory(memoryName, file);
         message = "Uploaded the file successfully: " + file.getOriginalFilename();
-        HashMap jsonRes = new HashMap<>();
+        HashMap<String, Object> jsonRes = new HashMap<>();
         jsonRes.put("message", message);
         jsonRes.put("memoryId", memory.getId());
         return ResponseEntity.status(HttpStatus.OK).body(jsonRes);
       } catch (Exception e) {
         message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-        HashMap jsonRes = new HashMap<>();
+        HashMap<String, Object> jsonRes = new HashMap<>();
         jsonRes.put("message", message);
         return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(jsonRes);
       }

@@ -1,6 +1,6 @@
 <div *ngIf="isLoggedIn">
   <mat-tab-group dynamicHeight preserveContent (selectedTabChange)="myTabSelectedTabChange($event)" animationDuration="0" [(selectedIndex)]=selectedIndex>
-    <mat-tab label="Short tab">
+    <mat-tab label="Group Memories">
       <div>
         <div class="alert alert-warning" *ngIf="userGroupLoadFailed">
           failed to get usergroup!<br />{{ errorMessage }}
@@ -34,7 +34,7 @@
 
 
   </mat-tab>
-    <mat-tab label="Long tab">
+    <mat-tab label="Group Users">
       <app-user-group-users-tab [(requiredUserGroupId)]="requiredUserGroupId" [(usersInGroup)]="usersInGroup" [(pendingUsersInGroup)]="pendingUsersInGroup" [(selectedIndex)]="selectedIndex" [(userGroupAdminUsername)]="userGroupAdminUsername" (selectedIndexChange)="onIndexChange($event)" ></app-user-group-users-tab>
     </mat-tab>
   </mat-tab-group>

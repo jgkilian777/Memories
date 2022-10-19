@@ -16,17 +16,17 @@ import java.util.*;
 @Service
 public class MemoryServiceImpl implements MemoryService {
 
-private final MemoryRepository memoryRepository;
+  private final MemoryRepository memoryRepository;
 
-private final UserServiceImpl userServiceImpl;
+  private final UserServiceImpl userServiceImpl;
 
-    private final AuthUtils authUtils;
+  private final AuthUtils authUtils;
 
-    private final UserGroupRepository userGroupRepository;
+  private final UserGroupRepository userGroupRepository;
 
-    private final ValidMimeTypes validMimeTypes;
+  private final ValidMimeTypes validMimeTypes;
 
-private final UserGroupServiceImpl userGroupService;
+  private final UserGroupServiceImpl userGroupService;
 
   public MemoryServiceImpl(MemoryRepository memoryRepository, UserServiceImpl userServiceImpl, AuthUtils authUtils, UserGroupRepository userGroupRepository, ValidMimeTypes validMimeTypes, UserGroupServiceImpl userGroupService){
     this.memoryRepository = memoryRepository;
@@ -38,37 +38,37 @@ private final UserGroupServiceImpl userGroupService;
   }
 
 
-    @Override
-    public Memory createMemory(String name, MultipartFile file) throws IOException, RuntimeException {
-      if (!validMimeTypes.getValidMimeTypes().contains(file.getContentType())){
-        throw new RuntimeException("invalid file type!");
-      }
-      try {
-        User userInstance = authUtils.getCurrentlyAuthenticatedUser();
-        Memory memory = new Memory(userInstance, name, file.getContentType(), file.getBytes());
-        return memoryRepository.save(memory);
-      } catch (RuntimeException e){
-        throw e;
-      }
+  @Override
+  public Memory createMemory(String name, MultipartFile file) throws IOException, RuntimeException {
+    if (!validMimeTypes.getValidMimeTypes().contains(file.getContentType())){
+      throw new RuntimeException("invalid file type!");
     }
+    try {
+      User userInstance = authUtils.getCurrentlyAuthenticatedUser();
+      Memory memory = new Memory(userInstance, name, file.getContentType(), file.getBytes());
+      return memoryRepository.save(memory);
+    } catch (RuntimeException e){
+      throw e;
+    }
+  }
 
-    @Override
-    public Memory getMemoryInUserGroup(Long userGroupId, Long memoryId){
-      UserAndUserGroup userAndUserGroup = userServiceImpl.principalCanAccessUserGroupId(userGroupId);
-      if(userAndUserGroup==null){
-        throw new RuntimeException("somehow unauthorised");
-      }
-      Optional<Memory> optionalMemory = memoryRepository.findById(memoryId);
-      if (!optionalMemory.isPresent()){
-        throw new RuntimeException("memory doesnt exist");
-      }
-      Set<Memory> userGroupMemories= userAndUserGroup.userGroup.getMemories();
-      if (!userGroupMemories.contains(optionalMemory.get())){
-        throw new RuntimeException("memory isnt in usergroup!");
-      } else {
-        return optionalMemory.get();
-      }
+  @Override
+  public Memory getMemoryInUserGroup(Long userGroupId, Long memoryId){
+    UserAndUserGroup userAndUserGroup = userServiceImpl.principalCanAccessUserGroupId(userGroupId);
+    if(userAndUserGroup==null){
+      throw new RuntimeException("somehow unauthorised");
     }
+    Optional<Memory> optionalMemory = memoryRepository.findById(memoryId);
+    if (!optionalMemory.isPresent()){
+      throw new RuntimeException("memory doesnt exist");
+    }
+    Set<Memory> userGroupMemories= userAndUserGroup.userGroup.getMemories();
+    if (!userGroupMemories.contains(optionalMemory.get())){
+      throw new RuntimeException("memory isnt in usergroup!");
+    } else {
+      return optionalMemory.get();
+    }
+  }
 
   @Override
   public String getMemoryMimeTypeInUserGroup(Long userGroupId, Long memoryId){

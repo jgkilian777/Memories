@@ -7,11 +7,11 @@
 
   <div *ngFor="let pendingusergroup of pendinguserGroups" class="pendinguserGroupItem">
 
-    <h3>
+    <h5>
         pending: {{ pendingusergroup.name }}
-      <a (click)="acceptUserGroupInvite(pendingusergroup.id)">accept</a>
-      <a (click)="declineUserGroupInvite(pendingusergroup.id)">decline</a>
-    </h3>
+      <a (click)="acceptUserGroupInvite(pendingusergroup.id)" class="btn btn-light"> accept </a>
+      <a (click)="declineUserGroupInvite(pendingusergroup.id)" class="btn btn-light"> decline</a>
+    </h5>
 
   </div>
 

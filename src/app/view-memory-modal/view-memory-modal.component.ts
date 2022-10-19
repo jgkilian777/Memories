@@ -52,6 +52,7 @@ export class ViewMemoryModalComponent implements OnInit, OnChanges, AfterViewIni
   videoMimeTypes = new Set([
     "video/mp4",
     "video/webm",
+    "video/x-matroska",
   ])
 
   imageMimeTypes = new Set([
@@ -87,8 +88,8 @@ export class ViewMemoryModalComponent implements OnInit, OnChanges, AfterViewIni
     vidEle.autoplay = false;
     vidEle.controls = true;
     vidEle.muted = false;
-    vidEle.height = 240;
-    vidEle.width = 320;
+    // vidEle.height = 480;
+    this.renderer.setStyle(vidEle, "width", "100%");
 
     this.renderer.appendChild(this.mediaContainer.nativeElement, vidEle);
   }
@@ -96,6 +97,7 @@ export class ViewMemoryModalComponent implements OnInit, OnChanges, AfterViewIni
   initImageView(){
     const imgEle = this.renderer.createElement('img');
     imgEle.src = 'http://localhost:8080/api/memories/'+String(this.usergroupId)+'/'+String(this.fileId);
+    this.renderer.setStyle(imgEle, "width", "100%");
     this.renderer.appendChild(this.mediaContainer.nativeElement, imgEle);
   }
 

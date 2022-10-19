@@ -39,7 +39,7 @@ export class CreateAndAddMemoryToUsergroupModalComponent implements OnInit {
 
   @Input() public usergroupId: number;
 
-  requiredFileType = ".jpeg, .jpg, .png, .mp4, .webm, .gif";
+  requiredFileType = ".jpeg, .jpg, .png, .mp4, .webm, .gif, .mkv";
 
   fileName = '';
   uploadProgress:number | null;

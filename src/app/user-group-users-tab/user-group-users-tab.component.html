@@ -17,7 +17,7 @@
 
   <h3>
     {{pendingUserInGroup.username}}
-    <a [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)" (click)="cancelPendingUserInvite(pendingUserInGroup.username)">cancel invite</a>
+    <a [hidden]="!(currentUsername===userGroupAdminUsername || allowAllDebug)" (click)="cancelPendingUserInvite(pendingUserInGroup.username)" class="btn btn-light">cancel invite</a>
   </h3>
 
 </div>

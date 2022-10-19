@@ -15,6 +15,7 @@ public class ValidMimeTypes {
     this.validMimeTypes.add("image/gif");
     this.validMimeTypes.add("image/jpeg");
     this.validMimeTypes.add("image/png");
+    this.validMimeTypes.add("video/x-matroska");
   }
 
   public HashSet<String> getValidMimeTypes() {
